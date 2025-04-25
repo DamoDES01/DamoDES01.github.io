@@ -13,14 +13,14 @@
 	}
     
 	/* Table and general cell borders */
-	table, th, td {
-	  border: 1px solid #ccc;
+	table {
 	  border-collapse: collapse;
 	  border-spacing: 0;
 	}
 
 	/* Header cells */
 	th {
+	  border: 1px solid #ccc;
 	  background: #f0f0f0;
 	  font-size: 16px;
 	  text-align: center;
@@ -29,6 +29,7 @@
 
 	/* Regular table cells */
 	td {
+	  border: 1px solid #ccc;
 	  width: 50px;
 	  height: 50px;
 	  padding: 0;
@@ -37,14 +38,11 @@
 	  vertical-align: middle;
 	}	
 
-	td:nth-child(7) {
+	/* General spacer style for both headers and cells */
+	.spacer-cell {
 	  border: none;
 	  background: transparent;
-	}
-
-	/* Make the spacer column appear blank and fixed width */
-	col.spacer-col {
-	  width: 40px;
+	  min-width: 20px;
 	}
 
 	/* Score inputs (arrows) */
@@ -76,25 +74,56 @@
 	/* Keyboard container */
 	.keyboard {
 	  display: grid;
-	  grid-template-columns: repeat(4, 1fr);
+	  grid-template-columns: repeat(6, 1fr);
 	  gap: 5px;
 	  margin-top: 20px;
 	}
 
 	/* Individual keyboard keys */
 	.key {
-	  padding: 10px;
-	  background: #eee;
-	  border: 1px solid #ccc;
+	  padding: 15px;
 	  font-size: 20px;
 	  text-align: center;
-	  border-radius: 5px;
+	  border: 1px solid #ccc;
+	  border-radius: 6px;
 	  user-select: none;
+	}
+
+	/* Universal color classes for both keys and inputs */
+	.gold-zone {
+	  background-color: #FFD700;
+	  color: black;
+	}
+
+	.red-zone {
+	  background-color: #FF6347;
+	  color: white;
+	}
+
+	.blue-zone {
+	  background-color: #1E90FF;
+	  color: white;
+	}
+
+	.black-zone {
+	  background-color: #333;
+	  color: white;
+	}
+
+	.white-zone {
+	  background-color: #f0f0f0;
+	  color: black;
+	  border: 1px solid #ccc;
 	}
 
 	/* Pressed key effect */
 	.key:active {
-	  background: #ccc;
+	  opacity: 0.7;
+	}
+
+	.key:hover {
+	  cursor: pointer;
+	  box-shadow: 0 0 5px #aaa;
 	}
 
 	/* Buttons (reset etc.) */
@@ -105,11 +134,18 @@
 	  font-size: 18px;
 	}
 	
+    .boxed {
+      border: 1px solid black;
+      padding: 2px 6px;
+      display: inline-block;
+      margin-left: 5px;
+    }	
+	
   </style>
 </head>
 <body>
 <div id="container">
-	<h1>Feuille de pointage - Tir à l'arc</h1>
+	<h1>Feuille de pointage</h1>
 
 	<table id="scoreTable">
 	  <colgroup>
@@ -121,8 +157,8 @@
 		<col style="width: 50px;">   <!-- Volée -->
 		<col style="width: 50px;">   <!-- Cumul -->
 		
-		<!-- Spacer (blank between left and right) -->
-		<col class="spacer-col">
+		<!-- Spacer -->
+		<col style="width: 20px;">  <!-- Spacer column -->
 		
 		<!-- Right side -->
 		<col style="width: 30px;">   <!-- Line number -->
@@ -135,24 +171,25 @@
 	</table>
 
 	<div id="stats" style="margin-top: 30px; font-size: 20px;">
-	  <div id="count10"># 10 : 0</div>
-	  <div id="count9"># 9 : 0</div>
-	  <div id="totalArrows">Total 60 flèches : 0</div>
+	  #10 <span class="boxed"><div id="count10">0</div></span> &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+	  #9 <span class="boxed"><div id="count9">0</div></span> &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+	  Total 60 flèches <span class="boxed"><div id="totalArrows">0</div></span>
 	</div>
 
 	<div class="keyboard" id="keyboard">
-	  <div class="key">M</div>
-	  <div class="key">1</div>
-	  <div class="key">2</div>
-	  <div class="key">3</div>
-	  <div class="key">4</div>
-	  <div class="key">5</div>
-	  <div class="key">6</div>
-	  <div class="key">7</div>
-	  <div class="key">8</div>
-	  <div class="key">9</div>
-	  <div class="key">10</div>
-	  <div class="key">X</div>
+	  <div class="key gold-zone">X</div>
+	  <div class="key gold-zone">10</div>
+	  <div class="key gold-zone">9</div>
+	  <div class="key red-zone">8</div>
+	  <div class="key red-zone">7</div>
+	  <div class="key blue-zone">6</div>
+
+	  <div class="key blue-zone">5</div>
+	  <div class="key black-zone">4</div>
+	  <div class="key black-zone">3</div>
+	  <div class="key white-zone">2</div>
+	  <div class="key white-zone">1</div>
+	  <div class="key white-zone">M</div>
 	</div>
 
 	<div style="margin-top: 20px; text-align: center;">
@@ -175,11 +212,12 @@
   // Create table header
   const header = document.createElement('tr');
   header.innerHTML = `
-    <th></th>
+    <th class="spacer-cell"></th>
     <th colspan="3">3 flèches/volée</th>
     <th>Volée</th>
     <th>Cumul</th>
-    <th></th>
+    <th class="spacer-cell"></th>
+    <th class="spacer-cell"></th>
     <th colspan="3">3 flèches/volée</th>
     <th>Volée</th>
     <th>Cumul</th>
@@ -221,6 +259,11 @@
     cumulLeft.textContent = i === 0 ? '' : '0';
     cumulCellsLeft.push(cumulLeft);
     row.appendChild(cumulLeft);
+
+	// Spacer column
+	const spacer = document.createElement('td');
+	spacer.className = 'spacer-cell';
+	row.appendChild(spacer);
 
     // Line number (right 11 to 20)
     const lineRight = document.createElement('td');
@@ -272,6 +315,7 @@ keyboard.addEventListener('click', function(event) {
     const value = event.target.textContent;
     if (currentInputIndex < allInputs.length) {
       allInputs[currentInputIndex].value = value;
+	  colorInput(allInputs[currentInputIndex], value);
       currentInputIndex++;
       if (currentInputIndex < allInputs.length) {
         allInputs[currentInputIndex].focus();
@@ -320,14 +364,23 @@ function calculateTotals() {
         if (num === 9) count9++;
       }
     }
-    sumCellsLeft[i].textContent = sum;
+	if (sum > 0) {
+		sumCellsLeft[i].textContent = sum;
+	} else {
+		sumCellsLeft[i].textContent = '';
+	}
   }
 
   // LEFT cumulative
   let cumulLeft = 0;
   for (let i = 0; i < 10; i++) {
-    cumulLeft += parseInt(sumCellsLeft[i].textContent);
-    if (i !== 0) cumulCellsLeft[i].textContent = cumulLeft;
+    let sum = parseInt(sumCellsLeft[i].textContent);
+	if (sum > 0) {
+		cumulLeft += sum;
+		cumulCellsLeft[i].textContent = cumulLeft
+	} else {
+		cumulCellsLeft[i].textContent = '';
+	}
   }
 
   // RIGHT sums
@@ -347,14 +400,23 @@ function calculateTotals() {
         if (num === 9) count9++;
       }
     }
-    sumCellsRight[i].textContent = sum;
+	if (sum > 0) {
+		sumCellsRight[i].textContent = sum;
+	} else {
+		sumCellsRight[i].textContent = '';
+	}	
   }
 
   // RIGHT cumulative
   let cumulRight = 0;
   for (let i = 0; i < 10; i++) {
-    cumulRight += parseInt(sumCellsRight[i].textContent);
-    if (i !== 0) cumulCellsRight[i].textContent = cumulRight;
+    let sum = parseInt(sumCellsRight[i].textContent);
+	if (sum > 0) {
+		cumulRight += sum;
+		cumulCellsRight[i].textContent = cumulRight
+	} else {
+		cumulCellsRight[i].textContent = '';
+	}  
   }
 
   // TOTAL
@@ -369,9 +431,9 @@ function calculateTotals() {
     }
   });
 
-  document.getElementById('count10').textContent = '# 10 : ' + count10;
-  document.getElementById('count9').textContent = '# 9 : ' + count9;
-  document.getElementById('totalArrows').textContent = 'Total 60 flèches : ' + totalScore;
+  document.getElementById('count10').innerHTML = count10;
+  document.getElementById('count9').innerHTML = count9;
+  document.getElementById('totalArrows').innerHTML = totalScore;
 }
 
 window.addEventListener('load', function() {
@@ -383,6 +445,7 @@ window.addEventListener('load', function() {
     scores.forEach((value, index) => {
       if (index < allInputs.length) {
         allInputs[index].value = value;
+		colorInput(allInputs[index], value);		
       }
     });
     calculateTotals();
@@ -401,12 +464,13 @@ document.getElementById('clearScoresBtn').addEventListener('click', function() {
     allInputs.forEach(input => input.value = '');
     currentInputIndex = 0;
     calculateTotals();
+	clearArrowColors();
     localStorage.removeItem('archeryScores');
     localStorage.removeItem('archeryCurrentIndex');
-    document.getElementById('totalResult').textContent = 'Score Total: 0';
-    document.getElementById('count10').textContent = '# 10 : 0';
-    document.getElementById('count9').textContent = '# 9 : 0';
-    document.getElementById('totalArrows').textContent = 'Total 60 flèches : 0';
+
+    document.getElementById('count10').textContent = '0';
+    document.getElementById('count9').textContent = '0';
+    document.getElementById('totalArrows').textContent = '0';
   }
 });
 
@@ -415,6 +479,33 @@ function setActiveInput(index) {
   if (index >= 0 && index < allInputs.length) {
     allInputs[index].classList.add('active-input');
   }
+}
+
+function colorInput(input, value) {
+  input.classList.remove('gold-zone', 'red-zone', 'blue-zone', 'black-zone', 'white-zone');
+
+  value = value.toUpperCase();
+
+  if (value === 'X' || value === '10' || value === '9') {
+    input.classList.add('gold-zone');
+  } else if (value === '8' || value === '7') {
+    input.classList.add('red-zone');
+  } else if (value === '6' || value === '5') {
+    input.classList.add('blue-zone');
+  } else if (value === '4' || value === '3') {
+    input.classList.add('black-zone');
+  } else if (value === '2' || value === '1' || value === 'M') {
+    input.classList.add('white-zone');
+  }
+}
+
+function clearArrowColors() {
+  const colorClasses = ['gold-zone', 'red-zone', 'blue-zone', 'black-zone', 'white-zone'];
+  const inputs = document.querySelectorAll('.score-input');
+
+  inputs.forEach(input => {
+    input.classList.remove(...colorClasses);
+  });
 }
 
 </script>
