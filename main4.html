@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feuille de pointage Tir à l'Arc</title>
+  <style>
+	body { font-family: Arial, sans-serif; padding: 20px; }
+
+	/* Container to center everything and fix width for mobile */
+	#container {
+	  width: 100%;
+	  max-width: 100%;
+	  margin: 0 auto;
+	  padding: 5px;
+	}
+    
+	/* Table and general cell borders */
+	table {
+	  border-collapse: collapse;
+	  border-spacing: 0;
+	}
+
+	/* Header cells */
+	th {
+	  border: 1px solid #ccc;
+	  background: #f0f0f0;
+	  font-size: 16px;
+	  text-align: center;
+	  vertical-align: middle;
+	}
+
+	/* Regular table cells */
+	td {
+	  border: 1px solid #ccc;
+	  width: 50px;
+	  height: 50px;
+	  padding: 0;
+	  box-sizing: border-box;
+	  text-align: center;
+	  vertical-align: middle;
+	}	
+
+	/* General spacer style for both headers and cells */
+	.spacer-cell {
+	  border: none;
+	  background: transparent;
+	  min-width: 20px;
+	}
+
+	/* Score inputs (arrows) */
+	.score-input {
+	  width: 45px;
+	  height: 45px;
+	  font-size: 18px;
+	  text-align: center;
+	  padding: 0;
+	  border: none;
+	  background: none;
+	  outline: none;
+	  box-sizing: border-box;
+	}
+	
+	/* Active input (highlight the arrow currently being filled) */
+	.active-input {
+	  border: 2px solid blue;
+	  background-color: #eef6ff;
+	}
+
+	/* Sum and cumulative cells */
+	.sum-cell, .cumulative-cell {
+	  width: 60px;
+	  font-weight: bold;
+	  font-size: 16px;
+	}
+
+	/* Keyboard container */
+	.keyboard {
+	  display: grid;
+	  grid-template-columns: repeat(6, 1fr);
+	  gap: 5px;
+	  margin-top: 20px;
+	}
+
+	/* Individual keyboard keys */
+	.key {
+	  padding: 15px;
+	  font-size: 20px;
+	  text-align: center;
+	  border: 1px solid #ccc;
+	  border-radius: 6px;
+	  user-select: none;
+	}
+
+	/* Universal color classes for both keys and inputs */
+	.gold-zone {
+	  background-color: #FFD700;
+	  color: black;
+	}
+
+	.red-zone {
+	  background-color: #FF6347;
+	  color: white;
+	}
+
+	.blue-zone {
+	  background-color: #1E90FF;
+	  color: white;
+	}
+
+	.black-zone {
+	  background-color: #333;
+	  color: white;
+	}
+
+	.white-zone {
+	  background-color: #f0f0f0;
+	  color: black;
+	  border: 1px solid #ccc;
+	}
+
+	/* Pressed key effect */
+	.key:active {
+	  opacity: 0.7;
+	}
+
+	.key:hover {
+	  cursor: pointer;
+	  box-shadow: 0 0 5px #aaa;
+	}
+
+	/* Buttons (reset etc.) */
+	button {
+	  margin-top: 20px;
+	  padding: 10px;
+	  width: 100%;
+	  font-size: 18px;
+	}
+	
+    .boxed {
+      border: 1px solid black;
+      padding: 2px 6px;
+      display: inline-block;
+      margin-left: 5px;
+    }	
+	
+  </style>
+</head>
+<body>
+<div id="container">
+	<h1>Feuille de pointage</h1>
+
+	<table id="scoreTable">
+	  <colgroup>
+		<!-- Left side -->
+		<col style="width: 30px;">   <!-- Line number -->
+		<col style="width: 45px;">   <!-- Arrow 1 -->
+		<col style="width: 45px;">   <!-- Arrow 2 -->
+		<col style="width: 45px;">   <!-- Arrow 3 -->
+		<col style="width: 50px;">   <!-- Volée -->
+		<col style="width: 50px;">   <!-- Cumul -->
+		
+		<!-- Spacer -->
+		<col style="width: 20px;">  <!-- Spacer column -->
+		
+		<!-- Right side -->
+		<col style="width: 30px;">   <!-- Line number -->
+		<col style="width: 45px;">   <!-- Arrow 1 -->
+		<col style="width: 45px;">   <!-- Arrow 2 -->
+		<col style="width: 45px;">   <!-- Arrow 3 -->
+		<col style="width: 50px;">   <!-- Volée -->
+		<col style="width: 50px;">   <!-- Cumul -->
+	  </colgroup>
+	</table>
+
+	<div id="stats" style="margin-top: 30px; font-size: 30px;">
+	  #10 <span class="boxed"><div id="count10">0</div></span> &nbsp&nbsp
+	  #9 <span class="boxed"><div id="count9">0</div></span> &nbsp&nbsp
+	  Total 60 flèches <span class="boxed"><div id="totalArrows">0</div></span>
+	</div>
+
+	<div class="keyboard" id="keyboard">
+	  <div class="key gold-zone">X</div>
+	  <div class="key gold-zone">10</div>
+	  <div class="key gold-zone">9</div>
+	  <div class="key red-zone">8</div>
+	  <div class="key red-zone">7</div>
+	  <div class="key blue-zone">6</div>
+
+	  <div class="key blue-zone">5</div>
+	  <div class="key black-zone">4</div>
+	  <div class="key black-zone">3</div>
+	  <div class="key white-zone">2</div>
+	  <div class="key white-zone">1</div>
+	  <div class="key white-zone">M</div>
+	</div>
+
+	<div style="margin-top: 20px; text-align: center;">
+	  <button id="clearScoresBtn">Réinitialiser les scores</button>
+	  <div id="saveMessage" style="margin-top:10px; font-size:16px; color:green; display:none;">Sauvegardé!</div>
+	</div>
+</div>
+
+<script>
+  const table = document.getElementById('scoreTable');
+  const scoreInputsLeft = [];
+  const scoreInputsRight = [];
+  const sumCellsLeft = [];
+  const cumulCellsLeft = [];
+  const sumCellsRight = [];
+  const cumulCellsRight = [];
+
+  let currentInputIndex = 0; // advance properly across left first, then right
+
+  // Create table header
+  const header = document.createElement('tr');
+  header.innerHTML = `
+    <th class="spacer-cell"></th>
+    <th colspan="3">3 flèches/volée</th>
+    <th>Volée</th>
+    <th>Cumul</th>
+    <th class="spacer-cell"></th>
+    <th class="spacer-cell"></th>
+    <th colspan="3">3 flèches/volée</th>
+    <th>Volée</th>
+    <th>Cumul</th>
+  `;
+  table.appendChild(header);
+
+  // Create table rows
+  for (let i = 0; i < 10; i++) {
+    const row = document.createElement('tr');
+
+    // Line number (left 1 to 10)
+    const lineLeft = document.createElement('td');
+    lineLeft.textContent = (i + 1).toString();
+    row.appendChild(lineLeft);
+
+    // 3 arrow inputs (left)
+    for (let j = 0; j < 3; j++) {
+      const td = document.createElement('td');
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.className = 'score-input';
+      input.readOnly = true;
+      input.dataset.index = scoreInputsLeft.length;
+      scoreInputsLeft.push(input);
+      td.appendChild(input);
+      row.appendChild(td);
+    }
+
+    // Volée (sum of 3 arrows - left)
+    const sumLeft = document.createElement('td');
+    sumLeft.className = 'sum-cell';
+    sumLeft.textContent = '0';
+    sumCellsLeft.push(sumLeft);
+    row.appendChild(sumLeft);
+
+    // Cumul (cumulative sum - left)
+    const cumulLeft = document.createElement('td');
+    cumulLeft.className = 'cumulative-cell';
+    cumulLeft.textContent = i === 0 ? '' : '0';
+    cumulCellsLeft.push(cumulLeft);
+    row.appendChild(cumulLeft);
+
+	// Spacer column
+	const spacer = document.createElement('td');
+	spacer.className = 'spacer-cell';
+	row.appendChild(spacer);
+
+    // Line number (right 11 to 20)
+    const lineRight = document.createElement('td');
+    lineRight.textContent = (i + 11).toString();
+    row.appendChild(lineRight);
+
+    // 3 arrow inputs (right)
+    for (let j = 0; j < 3; j++) {
+      const td = document.createElement('td');
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.className = 'score-input';
+      input.readOnly = true;
+      input.dataset.index = scoreInputsRight.length;
+      scoreInputsRight.push(input);
+      td.appendChild(input);
+      row.appendChild(td);
+    }
+
+    // Volée (sum of 3 arrows - right)
+    const sumRight = document.createElement('td');
+    sumRight.className = 'sum-cell';
+    sumRight.textContent = '0';
+    sumCellsRight.push(sumRight);
+    row.appendChild(sumRight);
+
+    // Cumul (cumulative sum - right)
+    const cumulRight = document.createElement('td');
+    cumulRight.className = 'cumulative-cell';
+    cumulRight.textContent = i === 0 ? '' : '0';
+    cumulCellsRight.push(cumulRight);
+    row.appendChild(cumulRight);
+
+    table.appendChild(row);
+  }
+
+  const allInputs = [...scoreInputsLeft, ...scoreInputsRight]; // Correct input order
+
+  allInputs.forEach((input, index) => {
+    input.addEventListener('click', () => {
+      currentInputIndex = index;
+	  setActiveInput(currentInputIndex);
+    });
+  });
+
+  const keyboard = document.getElementById('keyboard');
+keyboard.addEventListener('click', function(event) {
+  if (event.target.classList.contains('key')) {
+    const value = event.target.textContent;
+    if (currentInputIndex < allInputs.length) {
+      allInputs[currentInputIndex].value = value;
+	  colorInput(allInputs[currentInputIndex], value);
+      currentInputIndex++;
+      if (currentInputIndex < allInputs.length) {
+        allInputs[currentInputIndex].focus();
+      }
+      calculateTotals();
+      saveToLocalStorage(); // <-- Add this!
+	  setActiveInput(currentInputIndex);
+    }
+  }
+});
+
+function saveToLocalStorage() {
+  const scores = allInputs.map(input => input.value);
+  localStorage.setItem('archeryScores', JSON.stringify(scores));
+  localStorage.setItem('archeryCurrentIndex', currentInputIndex);
+  showSavedMessage();
+}
+
+function showSavedMessage() {
+  const msg = document.getElementById('saveMessage');
+  msg.style.display = 'block';
+  setTimeout(() => {
+    msg.style.display = 'none';
+  }, 1000); // Show "Saved!" for 1 second
+}
+
+function calculateTotals() {
+  let totalScore = 0;
+  let count10 = 0;
+  let count9 = 0;
+
+  // LEFT sums
+  for (let i = 0; i < 10; i++) {
+    let sum = 0;
+    for (let j = 0; j < 3; j++) {
+      const value = scoreInputsLeft[i * 3 + j].value.toUpperCase();
+      if (value === 'M') {
+        sum += 0;
+      } else if (value === 'X') {
+        sum += 10;
+        count10++;
+      } else if (!isNaN(parseInt(value))) {
+        const num = parseInt(value);
+        sum += num;
+        if (num === 10) count10++;
+        if (num === 9) count9++;
+      }
+    }
+	if (sum > 0) {
+		sumCellsLeft[i].textContent = sum;
+	} else {
+		sumCellsLeft[i].textContent = '';
+	}
+  }
+
+  // LEFT cumulative
+  let cumulLeft = 0;
+  for (let i = 0; i < 10; i++) {
+    let sum = parseInt(sumCellsLeft[i].textContent);
+	if (sum > 0) {
+		cumulLeft += sum;
+		cumulCellsLeft[i].textContent = cumulLeft
+	} else {
+		cumulCellsLeft[i].textContent = '';
+	}
+  }
+
+  // RIGHT sums
+  for (let i = 0; i < 10; i++) {
+    let sum = 0;
+    for (let j = 0; j < 3; j++) {
+      const value = scoreInputsRight[i * 3 + j].value.toUpperCase();
+      if (value === 'M') {
+        sum += 0;
+      } else if (value === 'X') {
+        sum += 10;
+        count10++;
+      } else if (!isNaN(parseInt(value))) {
+        const num = parseInt(value);
+        sum += num;
+        if (num === 10) count10++;
+        if (num === 9) count9++;
+      }
+    }
+	if (sum > 0) {
+		sumCellsRight[i].textContent = sum;
+	} else {
+		sumCellsRight[i].textContent = '';
+	}	
+  }
+
+  // RIGHT cumulative
+  let cumulRight = 0;
+  for (let i = 0; i < 10; i++) {
+    let sum = parseInt(sumCellsRight[i].textContent);
+	if (sum > 0) {
+		cumulRight += sum;
+		cumulCellsRight[i].textContent = cumulRight
+	} else {
+		cumulCellsRight[i].textContent = '';
+	}  
+  }
+
+  // TOTAL
+  allInputs.forEach(input => {
+    const value = input.value.toUpperCase();
+    if (value === 'M') {
+      totalScore += 0;
+    } else if (value === 'X') {
+      totalScore += 10;
+    } else if (!isNaN(parseInt(value))) {
+      totalScore += parseInt(value);
+    }
+  });
+
+  document.getElementById('count10').innerHTML = count10;
+  document.getElementById('count9').innerHTML = count9;
+  document.getElementById('totalArrows').innerHTML = totalScore;
+}
+
+window.addEventListener('load', function() {
+  const savedScores = localStorage.getItem('archeryScores');
+  const savedIndex = localStorage.getItem('archeryCurrentIndex');
+
+  if (savedScores) {
+    const scores = JSON.parse(savedScores);
+    scores.forEach((value, index) => {
+      if (index < allInputs.length) {
+        allInputs[index].value = value;
+		colorInput(allInputs[index], value);		
+      }
+    });
+  }
+  calculateTotals();
+
+  if (savedIndex) {
+    currentInputIndex = parseInt(savedIndex);
+    if (currentInputIndex < allInputs.length) {
+      allInputs[currentInputIndex].focus();
+    }
+  }
+});
+
+document.getElementById('clearScoresBtn').addEventListener('click', function() {
+  if (confirm('Êtes-vous sûr de vouloir réinitialiser tous les scores?')) {
+    allInputs.forEach(input => input.value = '');
+    currentInputIndex = 0;
+    calculateTotals();
+	clearArrowColors();
+    localStorage.removeItem('archeryScores');
+    localStorage.removeItem('archeryCurrentIndex');
+
+    document.getElementById('count10').textContent = '0';
+    document.getElementById('count9').textContent = '0';
+    document.getElementById('totalArrows').textContent = '0';
+  }
+});
+
+function setActiveInput(index) {
+  allInputs.forEach(input => input.classList.remove('active-input'));
+  if (index >= 0 && index < allInputs.length) {
+    allInputs[index].classList.add('active-input');
+  }
+}
+
+function colorInput(input, value) {
+  input.classList.remove('gold-zone', 'red-zone', 'blue-zone', 'black-zone', 'white-zone');
+
+  value = value.toUpperCase();
+
+  if (value === 'X' || value === '10' || value === '9') {
+    input.classList.add('gold-zone');
+  } else if (value === '8' || value === '7') {
+    input.classList.add('red-zone');
+  } else if (value === '6' || value === '5') {
+    input.classList.add('blue-zone');
+  } else if (value === '4' || value === '3') {
+    input.classList.add('black-zone');
+  } else if (value === '2' || value === '1' || value === 'M') {
+    input.classList.add('white-zone');
+  }
+}
+
+function clearArrowColors() {
+  const colorClasses = ['gold-zone', 'red-zone', 'blue-zone', 'black-zone', 'white-zone'];
+  const inputs = document.querySelectorAll('.score-input');
+
+  inputs.forEach(input => {
+    input.classList.remove(...colorClasses);
+  });
+}
+
+</script>
+
+</body>
+</html>
