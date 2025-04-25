@@ -45,7 +45,7 @@
 	.spacer-cell {
 	  border: none;
 	  background: transparent;
-	  min-width: 5px;
+	  min-width: 2px;
 	}
 
 	/* Arrow input line numbers */
@@ -88,7 +88,7 @@
 	  display: grid;
 	  grid-template-columns: repeat(6, 1fr);
 	  gap: 5px;
-	  margin-top: 20px;
+	  margin-top: 10px;
 	}
 
 	/* Individual keyboard keys */
@@ -141,7 +141,7 @@
 	/* Buttons (reset etc.) */
 	button {
 	  width: 100%;
-	  margin-top: 20px;
+	  margin-top: 10px;
 	  padding: 15px;
 	  font-size: 18px;
 	}
@@ -188,10 +188,10 @@
 	  <!-- </colgroup> -->
 	</table>
 
-	<table style="width: 100%; padding: 0px; border: none; border-collapse: collapse; margin-top: 10px; font-size: 20px">
+	<table style="width: 100%; padding: 0px; border: none; border-collapse: collapse; margin-top: 10px; font-size: 18px">
 	  <tr>
 		<td style="text-align: left" class="spacer-cell">#10<span class="boxed"><div id="count10">0</div></span>&nbsp&nbsp#9<span class="boxed"><div id="count9">0</div></span</td>
-		<td style="text-align: right; font-size: 24px;" class="spacer-cell">Total<span style="font-weight: bold;"class="boxed"><div id="totalArrows">0</div></span></td>
+		<td style="text-align: right; font-size: 22px;" class="spacer-cell">Total<span style="font-weight: bold;"class="boxed"><div id="totalArrows">0</div></span></td>
 	  </tr>
 	</table>
 	<div class="keyboard" id="keyboard">
@@ -211,7 +211,7 @@
 	</div>
 	<div style="margin-top: 0px; text-align: center;">
 	  <button id="clearScoresBtn">Réinitialiser les scores</button>
-	  <div id="saveMessage" style="margin-top:10px; font-size:16px; color:green; display:none;">Sauvegardé!</div>
+	  <!-- <div id="saveMessage" style="margin-top:5px; font-size:16px; color:green; display:none;">Sauvegardé!</div> -->
 	</div>
 </div>
 
