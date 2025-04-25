@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Archery Score Entry</title>
+</head>
+<body>
+  <h1>Enter Your Scores</h1>
+  <form id="scoreForm">
+    <input type="number" id="score1" placeholder="Arrow 1" required><br>
+    <input type="number" id="score2" placeholder="Arrow 2" required><br>
+    <input type="number" id="score3" placeholder="Arrow 3" required><br>
+    <button type="submit">Calculate Total</button>
+  </form>
+  <h2 id="result"></h2>
+
+  <script>
+    document.getElementById('scoreForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const score1 = parseInt(document.getElementById('score1').value, 10);
+      const score2 = parseInt(document.getElementById('score2').value, 10);
+      const score3 = parseInt(document.getElementById('score3').value, 10);
+      const total = score1 + score2 + score3;
+      document.getElementById('result').textContent = "Total Score: " + total;
+    });
+  </script>
+</body>
+</html>
