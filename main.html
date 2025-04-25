@@ -183,19 +183,25 @@
   });
 
   const keyboard = document.getElementById('keyboard');
-  keyboard.addEventListener('click', function(event) {
-    if (event.target.classList.contains('key')) {
-      const value = event.target.textContent;
+keyboard.addEventListener('click', function(event) {
+  if (event.target.classList.contains('key')) {
+    const value = event.target.textContent;
+    if (currentInputIndex < allInputs.length) {
+      allInputs[currentInputIndex].value = value;
+      currentInputIndex++;
       if (currentInputIndex < allInputs.length) {
-        allInputs[currentInputIndex].value = value;
-        currentInputIndex++;
-        if (currentInputIndex < allInputs.length) {
-          allInputs[currentInputIndex].focus();
-        }
-        calculateTotals();
+        allInputs[currentInputIndex].focus();
       }
+      calculateTotals();
+      saveToLocalStorage(); // <-- Add this!
     }
-  });
+  }
+});
+
+function saveToLocalStorage() {
+  const scores = allInputs.map(input => input.value);
+  localStorage.setItem('archeryScores', JSON.stringify(scores));
+}
 
 function calculateTotals() {
   let totalScore = 0;
@@ -273,6 +279,19 @@ function calculateTotals() {
   document.getElementById('count9').textContent = '# 9 : ' + count9;
   document.getElementById('totalArrows').textContent = 'Total 60 flèches : ' + totalScore;
 }
+
+window.addEventListener('load', function() {
+  const savedScores = localStorage.getItem('archeryScores');
+  if (savedScores) {
+    const scores = JSON.parse(savedScores);
+    scores.forEach((value, index) => {
+      if (index < allInputs.length) {
+        allInputs[index].value = value;
+      }
+    });
+    calculateTotals();
+  }
+});
 
 </script>
 
