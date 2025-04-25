@@ -22,9 +22,10 @@
 
 	/* Header cells */
 	th {
+	  height: 40px;
 	  border: 1px solid #ccc;
 	  background: #ffffff;
-	  font-size: 20px;
+	  font-size: 14px;
 	  text-align: center;
 	  vertical-align: middle;
 	}
@@ -49,9 +50,9 @@
 
 	/* Score inputs (arrows) */
 	.score-input {
-	  width: 95%;
-	  height: 95%;
-	  font-size: 20px;
+	  width: 92%;
+	  height: 92%;
+	  font-size: 26px;
 	  text-align: center;
 	  padding: 0;
 	  border: none;
@@ -60,17 +61,20 @@
 	  box-sizing: border-box;
 	}
 	
+	.score-input:focus {
+	  outline: none;
+	  border: 4px solid #00ff00; /* solid blue border when focused */
+	}
+	
 	/* Active input (highlight the arrow currently being filled) */
 	.active-input {
-	  border: 2px solid blue;
-	  background-color: #eef6ff;
+	  border: 4px solid #00ff00	;
+	  background-color: #ffffff;
 	}
 
 	/* Sum and cumulative cells */
 	.sum-cell, .cumulative-cell {
-	  <!-- width: 60px; -->
-	  font-weight: bold;
-	  font-size: 20px;
+	  font-size: 18px;
 	}
 
 	/* Keyboard container */
@@ -114,7 +118,7 @@
 	}
 
 	.white-zone {
-	  background-color: #f0f0f0;
+	  background-color: #ffffff;
 	  color: black;
 	  border: 1px solid #ccc;
 	}
@@ -225,12 +229,12 @@
     <th class="spacer-cell"></th>
     <th colspan="3">3 flèches/volée</th>
     <th>Volée</th>
-    <th>Cumul</th>
+    <th>Cum.</th>
     <th class="spacer-cell"></th>
     <th class="spacer-cell"></th>
     <th colspan="3">3 flèches/volée</th>
     <th>Volée</th>
-    <th>Cumul</th>
+    <th>Cum.</th>
   `;
   table.appendChild(header);
 
