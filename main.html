@@ -2,14 +2,17 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Feuille de pointage Tir à l'Arc</title>
   <style>
 	body { font-family: Arial, sans-serif; padding: 20px; }
 
 	/* Container to center everything and fix width for mobile */
 	#container {
-	  max-width: 400px; /* around typical mobile screen size */
-	  margin: 0 auto; /* center it */
+	  width: 100%;
+	  max-width: 100%;
+	  margin: 0 auto;
+	  padding: 5px;
 	}
     
 	/* Table and general cell borders */
@@ -171,8 +174,8 @@
 	</table>
 
 	<div id="stats" style="margin-top: 30px; font-size: 20px;">
-	  #10 <span class="boxed"><div id="count10">0</div></span> &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-	  #9 <span class="boxed"><div id="count9">0</div></span> &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+	  #10 <span class="boxed"><div id="count10">0</div></span> &nbsp&nbsp&nbsp&nbsp
+	  #9 <span class="boxed"><div id="count9">0</div></span> &nbsp&nbsp&nbsp&nbsp
 	  Total 60 flèches <span class="boxed"><div id="totalArrows">0</div></span>
 	</div>
 
@@ -448,8 +451,8 @@ window.addEventListener('load', function() {
 		colorInput(allInputs[index], value);		
       }
     });
-    calculateTotals();
   }
+  calculateTotals();
 
   if (savedIndex) {
     currentInputIndex = parseInt(savedIndex);
