@@ -3,530 +3,237 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Feuille de pointage Tir à l'Arc</title>
+  <title>Archery Score Entry</title>
   <style>
-	body { font-family: Arial, sans-serif; padding: 0px; }
-
-	/* Container to center everything and fix width for mobile */
-	#container {
-	  width: 100%;
-	  margin: 0 auto;
-	  padding: 1px;
-	}
-    
-	/* Table and general cell borders */
-	table {
-	  border-collapse: collapse;
-	  border-spacing: 0;
-	}
-
-	/* Header cells */
-	th {
-	  height: 30px;
-	  border: 1px solid #ccc;
-	  background: #ffffff;
-	  font-size: 14px;
-	  text-align: center;
-	  vertical-align: middle;
-	}
-
-	/* Regular table cells */
-	td {
-	  border: 1px solid #ccc;
-	  width: 40px;
-	  height: 30px;
-	  padding: 0;
-	  box-sizing: border-box;
-	  text-align: center;
-	  vertical-align: middle;
-	}	
-
-	/* General spacer style for both headers and cells */
-	.spacer-cell {
-	  border: none;
-	  background: transparent;
-	  min-width: 2px;
-	}
-
-	/* Arrow input line numbers */
-	.line-number {
-	  font-size: 12px;
-	}
-
-	/* Score inputs (arrows) */
-	.score-input {
-	  width: 92%;
-	  height: 92%;
-	  font-size: 18px;
-	  text-align: center;
-	  padding: 0;
-	  border: none;
-	  background: none;
-	  outline: none;
-	  box-sizing: border-box;
-	}
-	
-	.score-input:focus {
-	  outline: none;
-	  border: 4px solid #00ff00; /* solid blue border when focused */
-	}
-	
-	/* Active input (highlight the arrow currently being filled) */
-	.active-input {
-	  border: 4px solid #00ff00	;
-	  background-color: #ffffff;
-	}
-
-	/* Sum and cumulative cells */
-	.sum-cell, .cumulative-cell {
-	  font-size: 18px;
-	}
-
-	/* Keyboard container */
-	.keyboard {
-	  width: 100%;
-	  display: grid;
-	  grid-template-columns: repeat(6, 1fr);
-	  gap: 5px;
-	  margin-top: 10px;
-	}
-
-	/* Individual keyboard keys */
-	.key {
-	  padding: 15px;
-	  font-size: 24px;
-	  text-align: center;
-	  border: 1px solid #ccc;
-	  border-radius: 6px;
-	  user-select: none;
-	}
-
-	/* Universal color classes for both keys and inputs */
-	.gold-zone {
-	  background-color: #FFD700;
-	  color: black;
-	}
-
-	.red-zone {
-	  background-color: #FF6347;
-	  color: white;
-	}
-
-	.blue-zone {
-	  background-color: #1E90FF;
-	  color: white;
-	}
-
-	.black-zone {
-	  background-color: #333;
-	  color: white;
-	}
-
-	.white-zone {
-	  background-color: #ffffff;
-	  color: black;
-	  border: 1px solid #ccc;
-	}
-
-	/* Pressed key effect */
-	.key:active {
-	  opacity: 0.7;
-	}
-
-	.key:hover {
-	  cursor: pointer;
-	  box-shadow: 0 0 5px #aaa;
-	}
-
-	/* Buttons (reset etc.) */
-	button {
-	  width: 100%;
-	  margin-top: 10px;
-	  padding: 15px;
-	  font-size: 18px;
-	}
-	
-    .boxed {
-      border: 1px solid black;
-      padding: 2px 6px;
-      display: inline-block;
-      margin-left: 5px;
-    }	
-	
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 10px;
+      background: #f9f9f9;
+    }
+    #archersContainer {
+      margin-bottom: 20px;
+    }
+    .archer-info {
+      display: none;
+      margin-bottom: 20px;
+    }
+    .archer-header {
+      background: #eee;
+      padding: 10px;
+      font-size: 18px;
+      font-weight: bold;
+      text-align: center;
+      cursor: pointer;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    td {
+      border: 1px solid #ccc;
+      width: 16.6%;
+      text-align: center;
+      padding: 5px;
+    }
+    .score-input {
+      width: 100%;
+      text-align: center;
+      font-size: 18px;
+      padding: 5px;
+    }
+    .keyboard {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 5px;
+      margin-top: 10px;
+    }
+    .key {
+      padding: 15px;
+      font-size: 18px;
+      background: #ddd;
+      border-radius: 8px;
+      text-align: center;
+      cursor: pointer;
+    }
+    .active-input {
+      border: 2px solid #00FF00;
+    }
+    .controls {
+      text-align: center;
+      margin: 20px 0;
+    }
+    button {
+      margin: 5px;
+      padding: 10px 20px;
+      font-size: 18px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    #archerInfoModal {
+      display: none;
+      position: fixed;
+      top: 20%;
+      left: 10%;
+      width: 80%;
+      background: white;
+      border: 2px solid black;
+      padding: 20px;
+      z-index: 1000;
+      border-radius: 8px;
+    }
+    #archerInfoModal input, #archerInfoModal select {
+      margin: 5px 0;
+      width: 100%;
+      padding: 8px;
+    }
   </style>
 </head>
 <body>
-<div id="container">
-	<table style="width: 100%; padding: 0px; border: none; border-collapse: collapse; margin-top: 0px; font-weight: bold; font-size: 20px">
-	  <tr>
-		<td style="text-align: left" class="spacer-cell">Charles Carbonneau</td>
-		<td style="text-align: right"; class="spacer-cell">1A</td>
-	  </tr>
-	 </table>
 
-	<!-- <table id="scoreTable"> -->
-	<table id="scoreTable"; style="width: 100%; padding: 0px; border: none; border-collapse: collapse; margin-top: 0px; font-size: 26px">
-	  <!-- <colgroup> -->
-		<!-- Left side -->
-		<!-- <col style="width: 30px;"> -->
-		<!-- <col style="width: 45px;"> -->
-		<!-- <col style="width: 45px;"> -->
-		<!-- <col style="width: 45px;"> -->
-		<!-- <col style="width: 50px;"> -->
-		<!-- <col style="width: 50px;"> -->
-		
-		<!-- Spacer -->
-		<!-- <col style="width: 20px;"> -->
-		
-		<!-- Right side -->
-		<!-- <col style="width: 30px;"> -->
-		<!-- <col style="width: 45px;"> -->
-		<!-- <col style="width: 45px;"> -->
-		<!-- <col style="width: 45px;"> -->
-		<!-- <col style="width: 50px;"> -->
-		<!-- <col style="width: 50px;"> -->
-	  <!-- </colgroup> -->
-	</table>
+<div class="controls">
+  <button onclick="previousArcher()">⬅️ Archer précédent</button>
+  <button onclick="nextArcher()">➡️ Archer suivant</button>
+  <button onclick="resetScores()">Réinitialiser</button>
+</div>
 
-	<table style="width: 100%; padding: 0px; border: none; border-collapse: collapse; margin-top: 10px; font-size: 18px">
-	  <tr>
-		<td style="text-align: left" class="spacer-cell">#10<span class="boxed"><div id="count10">0</div></span>&nbsp&nbsp#9<span class="boxed"><div id="count9">0</div></span</td>
-		<td style="text-align: right; font-size: 22px;" class="spacer-cell">Total<span style="font-weight: bold;"class="boxed"><div id="totalArrows">0</div></span></td>
-	  </tr>
-	</table>
-	<div class="keyboard" id="keyboard">
-	  <div class="key gold-zone">X</div>
-	  <div class="key gold-zone">10</div>
-	  <div class="key gold-zone">9</div>
-	  <div class="key red-zone">8</div>
-	  <div class="key red-zone">7</div>
-	  <div class="key blue-zone">6</div>
+<div id="archersContainer"></div>
 
-	  <div class="key blue-zone">5</div>
-	  <div class="key black-zone">4</div>
-	  <div class="key black-zone">3</div>
-	  <div class="key white-zone">2</div>
-	  <div class="key white-zone">1</div>
-	  <div class="key white-zone">M</div>
-	</div>
-	<div style="margin-top: 0px; text-align: center;">
-	  <button id="clearScoresBtn">Réinitialiser les scores</button>
-	  <!-- <div id="saveMessage" style="margin-top:5px; font-size:16px; color:green; display:none;">Sauvegardé!</div> -->
-	</div>
+<div class="keyboard" id="keyboard"></div>
+
+<div id="archerInfoModal">
+  <h3>Modifier Infos Archer</h3>
+  <input type="text" id="modalArcherName" placeholder="Nom">
+  <input type="text" id="modalArcherID" placeholder="ID Unique">
+  <select id="modalTargetNumber">
+    <option value="">Cible #</option>
+    ${Array.from({ length: 15 }, (_, j) => `<option value="${j+1}">${j+1}</option>`).join('')}
+  </select>
+  <select id="modalPosition">
+    <option value="">Position</option>
+    <option value="A">A</option>
+    <option value="B">B</option>
+    <option value="C">C</option>
+    <option value="D">D</option>
+  </select>
+  <br><br>
+  <button onclick="saveArcherInfo()">Enregistrer</button>
+  <button onclick="closeModal()">Annuler</button>
 </div>
 
 <script>
-  const table = document.getElementById('scoreTable');
-  const scoreInputsLeft = [];
-  const scoreInputsRight = [];
-  const sumCellsLeft = [];
-  const cumulCellsLeft = [];
-  const sumCellsRight = [];
-  const cumulCellsRight = [];
+let currentArcher = 1;
+let currentEditingArcher = null;
+const colors = { "X": "#FFD700", "10": "#FFD700", "9": "#FF6347", "8": "#FF6347", "7": "#1E90FF", "6": "#1E90FF", "5": "#333333", "4": "#333333", "3": "#f0f0f0", "2": "#f0f0f0", "1": "#f0f0f0", "M": "#f0f0f0" };
 
-  let currentInputIndex = 0; // advance properly across left first, then right
+function createArcherForms(numArchers = 4) {
+  const container = document.getElementById('archersContainer');
+  for (let i = 1; i <= numArchers; i++) {
+    const archerDiv = document.createElement('div');
+    archerDiv.className = 'archer-info';
+    archerDiv.id = `archerInfo${i}`;
+    archerDiv.innerHTML = `
+      <div class="archer-header" onclick="openModalForArcher(${i})" id="archerHeader${i}">Nom de l'archer</div>
+      <div id="table${i}"></div>
+    `;
+    container.appendChild(archerDiv);
+    buildArcherTable(`table${i}`);
+  }
+}
 
-  // Create table header
-  const header = document.createElement('tr');
-  header.innerHTML = `
-    <th class="spacer-cell"></th>
-    <th colspan="3">3 flèches</th>
-    <th>Tot.</th>
-    <th>Cum.</th>
-    <th class="spacer-cell"></th>
-    <th class="spacer-cell"></th>
-    <th colspan="3">3 flèches</th>
-    <th>Tot.</th>
-    <th>Cum.</th>
-  `;
-  table.appendChild(header);
-
-  // Create table rows
+function buildArcherTable(containerId) {
+  const container = document.getElementById(containerId);
+  const table = document.createElement('table');
   for (let i = 0; i < 10; i++) {
     const row = document.createElement('tr');
-
-    // Line number (left 1 to 10)
-	const lineLeft = document.createElement('td');
-	lineLeft.className = 'line-number';
-	lineLeft.textContent = (i + 1).toString();
-	row.appendChild(lineLeft);
-
-    // 3 arrow inputs (left)
-    for (let j = 0; j < 3; j++) {
+    for (let j = 0; j < 6; j++) {
       const td = document.createElement('td');
       const input = document.createElement('input');
       input.type = 'text';
       input.className = 'score-input';
-      input.readOnly = true;
-      input.dataset.index = scoreInputsLeft.length;
-      scoreInputsLeft.push(input);
+      input.addEventListener('focus', () => setActiveInput(input));
       td.appendChild(input);
       row.appendChild(td);
     }
-
-    // Volée (sum of 3 arrows - left)
-    const sumLeft = document.createElement('td');
-    sumLeft.className = 'sum-cell';
-    sumLeft.textContent = '0';
-    sumCellsLeft.push(sumLeft);
-    row.appendChild(sumLeft);
-
-    // Cumul (cumulative sum - left)
-    const cumulLeft = document.createElement('td');
-    cumulLeft.className = 'cumulative-cell';
-    cumulLeft.textContent = i === 0 ? '' : '0';
-    cumulCellsLeft.push(cumulLeft);
-    row.appendChild(cumulLeft);
-
-	// Spacer column
-	const spacer = document.createElement('td');
-	spacer.className = 'spacer-cell';
-	row.appendChild(spacer);
-
-    // Line number (right 11 to 20)
-	const lineRight = document.createElement('td');
-	lineRight.className = 'line-number';
-	lineRight.textContent = (i + 11).toString();
-	row.appendChild(lineRight);
-
-    // 3 arrow inputs (right)
-    for (let j = 0; j < 3; j++) {
-      const td = document.createElement('td');
-      const input = document.createElement('input');
-      input.type = 'text';
-      input.className = 'score-input';
-      input.readOnly = true;
-      input.dataset.index = scoreInputsRight.length;
-      scoreInputsRight.push(input);
-      td.appendChild(input);
-      row.appendChild(td);
-    }
-
-    // Volée (sum of 3 arrows - right)
-    const sumRight = document.createElement('td');
-    sumRight.className = 'sum-cell';
-    sumRight.textContent = '0';
-    sumCellsRight.push(sumRight);
-    row.appendChild(sumRight);
-
-    // Cumul (cumulative sum - right)
-    const cumulRight = document.createElement('td');
-    cumulRight.className = 'cumulative-cell';
-    cumulRight.textContent = i === 0 ? '' : '0';
-    cumulCellsRight.push(cumulRight);
-    row.appendChild(cumulRight);
-
     table.appendChild(row);
   }
+  container.appendChild(table);
+}
 
-  const allInputs = [...scoreInputsLeft, ...scoreInputsRight]; // Correct input order
+let activeInput = null;
+function setActiveInput(input) {
+  if (activeInput) activeInput.classList.remove('active-input');
+  activeInput = input;
+  activeInput.classList.add('active-input');
+}
 
-  allInputs.forEach((input, index) => {
-    input.addEventListener('click', () => {
-      currentInputIndex = index;
-	  setActiveInput(currentInputIndex);
-    });
-  });
-
+function buildKeyboard() {
   const keyboard = document.getElementById('keyboard');
-keyboard.addEventListener('click', function(event) {
-  if (event.target.classList.contains('key')) {
-    const value = event.target.textContent;
-    if (currentInputIndex < allInputs.length) {
-      allInputs[currentInputIndex].value = value;
-	  colorInput(allInputs[currentInputIndex], value);
-      currentInputIndex++;
-      if (currentInputIndex < allInputs.length) {
-        allInputs[currentInputIndex].focus();
+  ['X', '10', '9', '8', '7', '6', '5', '4', '3', '2', '1', 'M'].forEach(val => {
+    const key = document.createElement('div');
+    key.className = 'key';
+    key.innerText = val;
+    key.style.background = colors[val] || '#ddd';
+    key.onclick = () => {
+      if (activeInput) {
+        activeInput.value = val;
+        activeInput.style.background = colors[val] || '#fff';
+        moveNextInput();
+        saveAllArchers();
       }
-      calculateTotals();
-      saveToLocalStorage(); // <-- Add this!
-	  setActiveInput(currentInputIndex);
-    }
-  }
-});
-
-function saveToLocalStorage() {
-  const scores = allInputs.map(input => input.value);
-  localStorage.setItem('archeryScores', JSON.stringify(scores));
-  localStorage.setItem('archeryCurrentIndex', currentInputIndex);
-  showSavedMessage();
-}
-
-function showSavedMessage() {
-  const msg = document.getElementById('saveMessage');
-  msg.style.display = 'block';
-  setTimeout(() => {
-    msg.style.display = 'none';
-  }, 1000); // Show "Saved!" for 1 second
-}
-
-function calculateTotals() {
-  let totalScore = 0;
-  let count10 = 0;
-  let count9 = 0;
-
-  // LEFT sums
-  for (let i = 0; i < 10; i++) {
-    let sum = 0;
-    for (let j = 0; j < 3; j++) {
-      const value = scoreInputsLeft[i * 3 + j].value.toUpperCase();
-      if (value === 'M') {
-        sum += 0;
-      } else if (value === 'X') {
-        sum += 10;
-        count10++;
-      } else if (!isNaN(parseInt(value))) {
-        const num = parseInt(value);
-        sum += num;
-        if (num === 10) count10++;
-        if (num === 9) count9++;
-      }
-    }
-	if (sum > 0) {
-		sumCellsLeft[i].textContent = sum;
-	} else {
-		sumCellsLeft[i].textContent = '';
-	}
-  }
-
-  // LEFT cumulative
-  let cumulLeft = 0;
-  for (let i = 0; i < 10; i++) {
-    let sum = parseInt(sumCellsLeft[i].textContent);
-	if (sum > 0) {
-		cumulLeft += sum;
-		cumulCellsLeft[i].textContent = cumulLeft
-	} else {
-		cumulCellsLeft[i].textContent = '';
-	}
-  }
-
-  // RIGHT sums
-  for (let i = 0; i < 10; i++) {
-    let sum = 0;
-    for (let j = 0; j < 3; j++) {
-      const value = scoreInputsRight[i * 3 + j].value.toUpperCase();
-      if (value === 'M') {
-        sum += 0;
-      } else if (value === 'X') {
-        sum += 10;
-        count10++;
-      } else if (!isNaN(parseInt(value))) {
-        const num = parseInt(value);
-        sum += num;
-        if (num === 10) count10++;
-        if (num === 9) count9++;
-      }
-    }
-	if (sum > 0) {
-		sumCellsRight[i].textContent = sum;
-	} else {
-		sumCellsRight[i].textContent = '';
-	}	
-  }
-
-  // RIGHT cumulative
-  let cumulRight = 0;
-  for (let i = 0; i < 10; i++) {
-    let sum = parseInt(sumCellsRight[i].textContent);
-	if (sum > 0) {
-		cumulRight += sum;
-		cumulCellsRight[i].textContent = cumulRight
-	} else {
-		cumulCellsRight[i].textContent = '';
-	}  
-  }
-
-  // TOTAL
-  allInputs.forEach(input => {
-    const value = input.value.toUpperCase();
-    if (value === 'M') {
-      totalScore += 0;
-    } else if (value === 'X') {
-      totalScore += 10;
-    } else if (!isNaN(parseInt(value))) {
-      totalScore += parseInt(value);
-    }
-  });
-
-  document.getElementById('count10').innerHTML = count10;
-  document.getElementById('count9').innerHTML = count9;
-  document.getElementById('totalArrows').innerHTML = totalScore;
-}
-
-window.addEventListener('load', function() {
-  const savedScores = localStorage.getItem('archeryScores');
-  const savedIndex = localStorage.getItem('archeryCurrentIndex');
-
-  if (savedScores) {
-    const scores = JSON.parse(savedScores);
-    scores.forEach((value, index) => {
-      if (index < allInputs.length) {
-        allInputs[index].value = value;
-		colorInput(allInputs[index], value);		
-      }
-    });
-  }
-  calculateTotals();
-
-  if (savedIndex) {
-    currentInputIndex = parseInt(savedIndex);
-    if (currentInputIndex < allInputs.length) {
-      allInputs[currentInputIndex].focus();
-    }
-  }
-});
-
-document.getElementById('clearScoresBtn').addEventListener('click', function() {
-  if (confirm('Êtes-vous sûr de vouloir réinitialiser tous les scores?')) {
-    allInputs.forEach(input => input.value = '');
-    currentInputIndex = 0;
-    calculateTotals();
-	clearArrowColors();
-    localStorage.removeItem('archeryScores');
-    localStorage.removeItem('archeryCurrentIndex');
-
-    document.getElementById('count10').textContent = '0';
-    document.getElementById('count9').textContent = '0';
-    document.getElementById('totalArrows').textContent = '0';
-  }
-});
-
-function setActiveInput(index) {
-  allInputs.forEach(input => input.classList.remove('active-input'));
-  if (index >= 0 && index < allInputs.length) {
-    allInputs[index].classList.add('active-input');
-  }
-}
-
-function colorInput(input, value) {
-  input.classList.remove('gold-zone', 'red-zone', 'blue-zone', 'black-zone', 'white-zone');
-
-  value = value.toUpperCase();
-
-  if (value === 'X' || value === '10' || value === '9') {
-    input.classList.add('gold-zone');
-  } else if (value === '8' || value === '7') {
-    input.classList.add('red-zone');
-  } else if (value === '6' || value === '5') {
-    input.classList.add('blue-zone');
-  } else if (value === '4' || value === '3') {
-    input.classList.add('black-zone');
-  } else if (value === '2' || value === '1' || value === 'M') {
-    input.classList.add('white-zone');
-  }
-}
-
-function clearArrowColors() {
-  const colorClasses = ['gold-zone', 'red-zone', 'blue-zone', 'black-zone', 'white-zone'];
-  const inputs = document.querySelectorAll('.score-input');
-
-  inputs.forEach(input => {
-    input.classList.remove(...colorClasses);
+    };
+    keyboard.appendChild(key);
   });
 }
 
+function moveNextInput() {
+  const inputs = Array.from(document.querySelectorAll('.archer-info:nth-child(' + currentArcher + ') .score-input'));
+  const idx = inputs.indexOf(activeInput);
+  if (idx >= 0 && idx < inputs.length - 1) {
+    inputs[idx + 1].focus();
+  }
+}
+
+function saveAllArchers() {
+  // Implementation
+}
+
+function loadAllArchers() {
+  // Implementation
+}
+
+function resetScores() {
+  // Implementation
+}
+
+function previousArcher() {
+  // Implementation
+}
+
+function nextArcher() {
+  // Implementation
+}
+
+function openModalForArcher(archerIndex) {
+  currentEditingArcher = archerIndex;
+  document.getElementById('archerInfoModal').style.display = 'block';
+}
+
+function closeModal() {
+  document.getElementById('archerInfoModal').style.display = 'none';
+}
+
+function saveArcherInfo() {
+  // Implementation
+  closeModal();
+}
+
+window.onload = function() {
+  createArcherForms(4);
+  buildKeyboard();
+};
 </script>
 
 </body>
