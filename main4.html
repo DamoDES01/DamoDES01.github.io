@@ -5,14 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Feuille de pointage Tir à l'Arc</title>
   <style>
-	body { font-family: Arial, sans-serif; padding: 20px; }
+	body { font-family: Arial, sans-serif; padding: 0px; }
 
 	/* Container to center everything and fix width for mobile */
 	#container {
 	  width: 100%;
-	  max-width: 100%;
 	  margin: 0 auto;
-	  padding: 5px;
+	  padding: 1px;
 	}
     
 	/* Table and general cell borders */
@@ -23,9 +22,10 @@
 
 	/* Header cells */
 	th {
+	  height: 30px;
 	  border: 1px solid #ccc;
-	  background: #f0f0f0;
-	  font-size: 16px;
+	  background: #ffffff;
+	  font-size: 14px;
 	  text-align: center;
 	  vertical-align: middle;
 	}
@@ -33,8 +33,8 @@
 	/* Regular table cells */
 	td {
 	  border: 1px solid #ccc;
-	  width: 50px;
-	  height: 50px;
+	  width: 40px;
+	  height: 30px;
 	  padding: 0;
 	  box-sizing: border-box;
 	  text-align: center;
@@ -45,13 +45,18 @@
 	.spacer-cell {
 	  border: none;
 	  background: transparent;
-	  min-width: 20px;
+	  min-width: 2px;
+	}
+
+	/* Arrow input line numbers */
+	.line-number {
+	  font-size: 12px;
 	}
 
 	/* Score inputs (arrows) */
 	.score-input {
-	  width: 45px;
-	  height: 45px;
+	  width: 92%;
+	  height: 92%;
 	  font-size: 18px;
 	  text-align: center;
 	  padding: 0;
@@ -61,31 +66,35 @@
 	  box-sizing: border-box;
 	}
 	
+	.score-input:focus {
+	  outline: none;
+	  border: 4px solid #00ff00; /* solid blue border when focused */
+	}
+	
 	/* Active input (highlight the arrow currently being filled) */
 	.active-input {
-	  border: 2px solid blue;
-	  background-color: #eef6ff;
+	  border: 4px solid #00ff00	;
+	  background-color: #ffffff;
 	}
 
 	/* Sum and cumulative cells */
 	.sum-cell, .cumulative-cell {
-	  width: 60px;
-	  font-weight: bold;
-	  font-size: 16px;
+	  font-size: 18px;
 	}
 
 	/* Keyboard container */
 	.keyboard {
+	  width: 100%;
 	  display: grid;
 	  grid-template-columns: repeat(6, 1fr);
 	  gap: 5px;
-	  margin-top: 20px;
+	  margin-top: 10px;
 	}
 
 	/* Individual keyboard keys */
 	.key {
 	  padding: 15px;
-	  font-size: 20px;
+	  font-size: 24px;
 	  text-align: center;
 	  border: 1px solid #ccc;
 	  border-radius: 6px;
@@ -114,7 +123,7 @@
 	}
 
 	.white-zone {
-	  background-color: #f0f0f0;
+	  background-color: #ffffff;
 	  color: black;
 	  border: 1px solid #ccc;
 	}
@@ -131,9 +140,9 @@
 
 	/* Buttons (reset etc.) */
 	button {
-	  margin-top: 20px;
-	  padding: 10px;
 	  width: 100%;
+	  margin-top: 10px;
+	  padding: 15px;
 	  font-size: 18px;
 	}
 	
@@ -148,37 +157,43 @@
 </head>
 <body>
 <div id="container">
-	<h1>Feuille de pointage</h1>
+	<table style="width: 100%; padding: 0px; border: none; border-collapse: collapse; margin-top: 0px; font-weight: bold; font-size: 20px">
+	  <tr>
+		<td style="text-align: left" class="spacer-cell">Charles Carbonneau</td>
+		<td style="text-align: right"; class="spacer-cell">1A</td>
+	  </tr>
+	 </table>
 
-	<table id="scoreTable">
-	  <colgroup>
+	<!-- <table id="scoreTable"> -->
+	<table id="scoreTable"; style="width: 100%; padding: 0px; border: none; border-collapse: collapse; margin-top: 0px; font-size: 26px">
+	  <!-- <colgroup> -->
 		<!-- Left side -->
-		<col style="width: 30px;">   <!-- Line number -->
-		<col style="width: 45px;">   <!-- Arrow 1 -->
-		<col style="width: 45px;">   <!-- Arrow 2 -->
-		<col style="width: 45px;">   <!-- Arrow 3 -->
-		<col style="width: 50px;">   <!-- Volée -->
-		<col style="width: 50px;">   <!-- Cumul -->
+		<!-- <col style="width: 30px;"> -->
+		<!-- <col style="width: 45px;"> -->
+		<!-- <col style="width: 45px;"> -->
+		<!-- <col style="width: 45px;"> -->
+		<!-- <col style="width: 50px;"> -->
+		<!-- <col style="width: 50px;"> -->
 		
 		<!-- Spacer -->
-		<col style="width: 20px;">  <!-- Spacer column -->
+		<!-- <col style="width: 20px;"> -->
 		
 		<!-- Right side -->
-		<col style="width: 30px;">   <!-- Line number -->
-		<col style="width: 45px;">   <!-- Arrow 1 -->
-		<col style="width: 45px;">   <!-- Arrow 2 -->
-		<col style="width: 45px;">   <!-- Arrow 3 -->
-		<col style="width: 50px;">   <!-- Volée -->
-		<col style="width: 50px;">   <!-- Cumul -->
-	  </colgroup>
+		<!-- <col style="width: 30px;"> -->
+		<!-- <col style="width: 45px;"> -->
+		<!-- <col style="width: 45px;"> -->
+		<!-- <col style="width: 45px;"> -->
+		<!-- <col style="width: 50px;"> -->
+		<!-- <col style="width: 50px;"> -->
+	  <!-- </colgroup> -->
 	</table>
 
-	<div id="stats" style="margin-top: 30px; font-size: 30px;">
-	  #10 <span class="boxed"><div id="count10">0</div></span> &nbsp&nbsp
-	  #9 <span class="boxed"><div id="count9">0</div></span> &nbsp&nbsp
-	  Total 60 flèches <span class="boxed"><div id="totalArrows">0</div></span>
-	</div>
-
+	<table style="width: 100%; padding: 0px; border: none; border-collapse: collapse; margin-top: 10px; font-size: 18px">
+	  <tr>
+		<td style="text-align: left" class="spacer-cell">#10<span class="boxed"><div id="count10">0</div></span>&nbsp&nbsp#9<span class="boxed"><div id="count9">0</div></span</td>
+		<td style="text-align: right; font-size: 22px;" class="spacer-cell">Total<span style="font-weight: bold;"class="boxed"><div id="totalArrows">0</div></span></td>
+	  </tr>
+	</table>
 	<div class="keyboard" id="keyboard">
 	  <div class="key gold-zone">X</div>
 	  <div class="key gold-zone">10</div>
@@ -194,10 +209,9 @@
 	  <div class="key white-zone">1</div>
 	  <div class="key white-zone">M</div>
 	</div>
-
-	<div style="margin-top: 20px; text-align: center;">
+	<div style="margin-top: 0px; text-align: center;">
 	  <button id="clearScoresBtn">Réinitialiser les scores</button>
-	  <div id="saveMessage" style="margin-top:10px; font-size:16px; color:green; display:none;">Sauvegardé!</div>
+	  <!-- <div id="saveMessage" style="margin-top:5px; font-size:16px; color:green; display:none;">Sauvegardé!</div> -->
 	</div>
 </div>
 
@@ -216,14 +230,14 @@
   const header = document.createElement('tr');
   header.innerHTML = `
     <th class="spacer-cell"></th>
-    <th colspan="3">3 flèches/volée</th>
-    <th>Volée</th>
-    <th>Cumul</th>
+    <th colspan="3">3 flèches</th>
+    <th>Tot.</th>
+    <th>Cum.</th>
     <th class="spacer-cell"></th>
     <th class="spacer-cell"></th>
-    <th colspan="3">3 flèches/volée</th>
-    <th>Volée</th>
-    <th>Cumul</th>
+    <th colspan="3">3 flèches</th>
+    <th>Tot.</th>
+    <th>Cum.</th>
   `;
   table.appendChild(header);
 
@@ -232,9 +246,10 @@
     const row = document.createElement('tr');
 
     // Line number (left 1 to 10)
-    const lineLeft = document.createElement('td');
-    lineLeft.textContent = (i + 1).toString();
-    row.appendChild(lineLeft);
+	const lineLeft = document.createElement('td');
+	lineLeft.className = 'line-number';
+	lineLeft.textContent = (i + 1).toString();
+	row.appendChild(lineLeft);
 
     // 3 arrow inputs (left)
     for (let j = 0; j < 3; j++) {
@@ -269,9 +284,10 @@
 	row.appendChild(spacer);
 
     // Line number (right 11 to 20)
-    const lineRight = document.createElement('td');
-    lineRight.textContent = (i + 11).toString();
-    row.appendChild(lineRight);
+	const lineRight = document.createElement('td');
+	lineRight.className = 'line-number';
+	lineRight.textContent = (i + 11).toString();
+	row.appendChild(lineRight);
 
     // 3 arrow inputs (right)
     for (let j = 0; j < 3; j++) {
