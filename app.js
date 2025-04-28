@@ -1,6 +1,7 @@
 let currentArcher = 1;
 let currentEditingArcher = null;
-const GOOGLE_FORM_URL = 'https://forms.gle/u9D7inN4H9L2GTjk6';
+const GOOGLE_FORM_URL = 'https://docs.google.com/forms/u/0/d/e/1FAIpQLSfNXgfMh5vKJqouCkdZONily9TA4yAhvu2HXFalh_TrJMiK3g/formResponse';
+
 
 const keyboardLayout = [
   ['X', '10', '9', '8', '7'],
@@ -35,13 +36,12 @@ function openArchers() {
 
 function exportToGoogleSheet() {
   toggleMenu();
-  alert('Export to Google Sheets not implemented yet!');
-  // Later: actual Google Sheets export code
+  fillGoogleForm();
 }
 
 function resetAll() {
   toggleMenu();
-  if (confirm('Êtes-vous sûr de vouloir tout réinitialiser?')) {
+  if (confirm('Les résultas seront effacés. Êtes-vous sûr de vouloir tout réinitialiser?')) {
     resetScores();
   }
 }
@@ -398,6 +398,7 @@ function parseScore(val) {
   if (val === "X") return 10;
   if (val === "M" || val === "") return 0;
   const num = parseInt(val);
+  // alert('from parseScore(): ' + val);
   return isNaN(num) ? 0 : num;
 }
 
@@ -476,42 +477,81 @@ function saveAllArchersInfo() {
   closeArchersEditModal();
 }
 
-function exportToGoogleSheet() {
+function fillGoogleForm() {
   const now = new Date();
   const date = now.toISOString().split('T')[0];
   const time = now.toTimeString().split(' ')[0].substring(0,5);
 
+  let previewText = 'Aperçu de l\'envoi :\n';
 
+  const archers = {};
   for (let i = 1; i <= 4; i++) {
-    selectArcher(i);
-    updateSumsAndCumul();
-    updateSummary();
-
-    const currentArcher = document.getElementById('archerHeader' + i);
-
-    const archerName = currentArcher.querySelector('#archerName' + i).value.trim();
-    const archerId = currentArcher.querySelector('#archerId' + i).value.trim();
-
-    const cumulative1to10 = currentArcher.querySelector('#cumul_left_10').innerText.trim();
-    const cumulative11to20 = currentArcher.querySelector('#cumul_right_20').innerText.trim();
-
-    const count10s = currentArcher.querySelector('#count10').innerText.trim();
-    const count9s = currentArcher.querySelector('#count9').innerText.trim();
-
-    const formData = new FormData();
-    formData.append('entry.1495486367', date);
-    formData.append('entry.300170305', time);
-    formData.append('entry.1544667290', archerId);
-    formData.append('entry.1134450', archerName);
-    formData.append('entry.204468612', cumulative1to10);
-    formData.append('entry.710538689', cumulative11to20);
-    formData.append('entry.1983848050', count10s);
-    formData.append('entry.709843835', count9s);
+    const name = document.getElementById('archerHeader' + i).dataset.name || '';
+    const uniqueID = document.getElementById('archerHeader' + i).dataset.id || '';
+    const target = document.getElementById('archerHeader' + i).dataset.target || '';
+    const position = document.getElementById('archerHeader' + i).dataset.position || '';
+    const scores = Array.from(document.querySelectorAll(`#archerInfo${i} .score-input`)).map(input => input.value);
+    archers[i] = { name, uniqueID, target, position, scores };
   }
+  // alert('filled archers[]');
 
-  fetch(GOOGLE_FORM_URL, {
-    method: 'POST',
-    mode: 'no-cors',
-    body: formData
-  });
+	for (let i = 1; i <= 4; i++) {
+	  const archer = archers[i];
+	  if (!archer) continue;
+
+	  const archerName = archer.name;
+	  const archerId = archer.uniqueID;
+
+	  const cumulative1to10 = calculateCumulative(archer.scores, 0); // lines 1 to 10
+	  const cumulative11to20 = calculateCumulative(archer.scores, 3); // lines 11 to 20
+	  const count10s = archer.scores.filter(score => score == '10' || score == 'X').length;
+	  const count9s = archer.scores.filter(score => score == '9').length;
+
+		previewText = 'Aperçu de l\'envoi :\n';
+		previewText += `\nArcher ${i}:\n`;
+		previewText += `Nom: ${archerName}\n`;
+		previewText += `ID: ${archerId}\n`;
+		previewText += `Cumul 30a: ${cumulative1to10}\n`;
+		previewText += `Cumul 30b: ${cumulative11to20}\n`;
+		previewText += `#10: ${count10s}\n`;
+		previewText += `#9: ${count9s}\n`;
+
+		// alert(previewText);
+
+		// send formData as before
+		const formData = new FormData();
+		formData.append('entry.1495486367', date);
+		formData.append('entry.300170305', time);
+		formData.append('entry.1544667290', archerId);
+		formData.append('entry.1134450', archerName);
+		formData.append('entry.204468612', cumulative1to10);
+		formData.append('entry.710538689', cumulative11to20);
+		formData.append('entry.1983848050', count10s);
+		formData.append('entry.709843835', count9s);	  
+		
+		fetch(GOOGLE_FORM_URL, {
+		  method: 'POST',
+		  mode: 'no-cors',
+		  body: formData
+		});		
+	}
+  alert('Results exported to Google Sheet.');
+}
+
+function calculateCumulative(scores, offset) {
+  let sum = 0;
+  for (let j = 1; j <= 10; j++) {
+	let startIndex = (j-1) * 6 + offset;
+    const el1 = scores[startIndex + 0];
+    const el2 = scores[startIndex + 1];
+    const el3 = scores[startIndex + 2];
+    // alert(el1 + ',' + el2 + ',' + el3);
+   
+    let val1 = parseScore(el1);
+    let val2 = parseScore(el2);
+    let val3 = parseScore(el3);
+    sum = sum + val1 + val2 + val3;
+    // alert(sum);
+  }
+  return sum;
 }
