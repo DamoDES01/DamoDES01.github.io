@@ -149,6 +149,7 @@ function makeArrowCell(id) {
   input.type = 'text';
   input.className = 'score-input';
   input.id = id;
+  input.readOnly = true;
   input.addEventListener('focus', () => setActiveInput(input));
   td.appendChild(input);
   return td;
