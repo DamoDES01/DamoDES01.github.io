@@ -1,7 +1,7 @@
 let currentArcher = 1;
 let currentEditingArcher = null;
-const GOOGLE_FORM_URL = 'https://docs.google.com/forms/u/0/d/e/1FAIpQLSfNXgfMh5vKJqouCkdZONily9TA4yAhvu2HXFalh_TrJMiK3g/formResponse';
-
+const GOOGLE_FORM_RESPONSE = 'https://docs.google.com/forms/u/0/d/e/1FAIpQLSfNXgfMh5vKJqouCkdZONily9TA4yAhvu2HXFalh_TrJMiK3g/formResponse';
+const EXPORT_CONFIRMATION = 'http://damodes.github.io/confimation.html';
 
 const keyboardLayout = [
   ['X', '10', '9', '8', '7'],
@@ -478,22 +478,31 @@ function saveAllArchersInfo() {
 }
 
 function fillGoogleForm() {
-  const now = new Date();
-  const date = now.toISOString().split('T')[0];
-  const time = now.toTimeString().split(' ')[0].substring(0,5);
+	const now = new Date();
+	const date = now.toISOString().split('T')[0];
+	const time = now.toTimeString().split(' ')[0].substring(0,5);
+	
+	let WebAvail = 0;
 
-  let previewText = 'Aperçu de l\'envoi :\n';
+	// Check if web is accessible
+	if (navigator.onLine) {
+		WebAvail = 1;
+	} else {
+		alert('Veuillez établir une connexion internet. Je ne peux pas exporter les données. ');
+	}
 
-  const archers = {};
-  for (let i = 1; i <= 4; i++) {
-    const name = document.getElementById('archerHeader' + i).dataset.name || '';
-    const uniqueID = document.getElementById('archerHeader' + i).dataset.id || '';
-    const target = document.getElementById('archerHeader' + i).dataset.target || '';
-    const position = document.getElementById('archerHeader' + i).dataset.position || '';
-    const scores = Array.from(document.querySelectorAll(`#archerInfo${i} .score-input`)).map(input => input.value);
-    archers[i] = { name, uniqueID, target, position, scores };
-  }
-  // alert('filled archers[]');
+	let previewText = 'Aperçu de l\'envoi :\n';
+
+	const archers = {};
+	for (let i = 1; i <= 4; i++) {
+		const name = document.getElementById('archerHeader' + i).dataset.name || '';
+		const uniqueID = document.getElementById('archerHeader' + i).dataset.id || '';
+		const target = document.getElementById('archerHeader' + i).dataset.target || '';
+		const position = document.getElementById('archerHeader' + i).dataset.position || '';
+		const scores = Array.from(document.querySelectorAll(`#archerInfo${i} .score-input`)).map(input => input.value);
+		archers[i] = { name, uniqueID, target, position, scores };
+	}
+	// alert('filled archers[]');
 
 	for (let i = 1; i <= 4; i++) {
 	  const archer = archers[i];
@@ -529,13 +538,13 @@ function fillGoogleForm() {
 		formData.append('entry.1983848050', count10s);
 		formData.append('entry.709843835', count9s);	  
 		
-		fetch(GOOGLE_FORM_URL, {
+		fetch(GOOGLE_FORM_RESPONSE, {
 		  method: 'POST',
 		  mode: 'no-cors',
 		  body: formData
 		});		
 	}
-  alert('Results exported to Google Sheet.');
+	alert('Succès. Les résultats ont été exportés sur le web.');
 }
 
 function calculateCumulative(scores, offset) {
