@@ -3,238 +3,135 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Archery Score Entry</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 10px;
-      background: #f9f9f9;
-    }
-    #archersContainer {
-      margin-bottom: 20px;
-    }
-    .archer-info {
-      display: none;
-      margin-bottom: 20px;
-    }
-    .archer-header {
-      background: #eee;
-      padding: 10px;
-      font-size: 18px;
-      font-weight: bold;
-      text-align: center;
-      cursor: pointer;
-      border-radius: 8px;
-      margin-bottom: 10px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    td {
-      border: 1px solid #ccc;
-      width: 16.6%;
-      text-align: center;
-      padding: 5px;
-    }
-    .score-input {
-      width: 100%;
-      text-align: center;
-      font-size: 18px;
-      padding: 5px;
-    }
-    .keyboard {
-      display: grid;
-      grid-template-columns: repeat(6, 1fr);
-      gap: 5px;
-      margin-top: 10px;
-    }
-    .key {
-      padding: 15px;
-      font-size: 18px;
-      background: #ddd;
-      border-radius: 8px;
-      text-align: center;
-      cursor: pointer;
-    }
-    .active-input {
-      border: 2px solid #00FF00;
-    }
-    .controls {
-      text-align: center;
-      margin: 20px 0;
-    }
-    button {
-      margin: 5px;
-      padding: 10px 20px;
-      font-size: 18px;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    #archerInfoModal {
-      display: none;
-      position: fixed;
-      top: 20%;
-      left: 10%;
-      width: 80%;
-      background: white;
-      border: 2px solid black;
-      padding: 20px;
-      z-index: 1000;
-      border-radius: 8px;
-    }
-    #archerInfoModal input, #archerInfoModal select {
-      margin: 5px 0;
-      width: 100%;
-      padding: 8px;
-    }
-  </style>
+  <title>Feuille de pointage Tir à l'Arc</title>
+  
+  <link rel="stylesheet" href="style.css">
+ 
 </head>
+
 <body>
+<div id="container">
+	<div class="top-bar">
+	  <div class="hamburger-menu">
+		<div class="hamburger-icon" onclick="toggleMenu()">☰</div>
+		<div class="menu-items" id="menuItems">
+		  <div onclick="openArchers()">Archers</div>
+		  <div onclick="exportToGoogleSheet()">Exporter</div>
+		  <div onclick="resetAll()">Réinitialiser</div>
+		</div>
+	  </div>
+	  <div class="archer-info-display" onclick="openModalForArcher()" id="archerInfoDisplay">
+		Assigner un Archer
+	  </div>
+	  <div class="next-archer">
+		<button onclick="nextArcher()" class="next-archer-button">
+		  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="50" height="50" fill="black">
+			<path d="M10 17l5-5-5-5v10z"/>
+		  </svg>
+		</button>
+	  </div>
+	</div>
 
-<div class="controls">
-  <button onclick="previousArcher()">⬅️ Archer précédent</button>
-  <button onclick="nextArcher()">➡️ Archer suivant</button>
-  <button onclick="resetScores()">Réinitialiser</button>
+	<div id="archersContainer"></div>
+
+	<div class="archer-summary" style="margin-top: 5px;">
+	<table style="width: 100%; padding: 0px; border: none; border-collapse: collapse; font-size: 18px">
+	  <tr>
+		<td style="text-align: left" class="spacer-cell">#10<span class="boxed"><div id="count10">0</div></span>&nbsp&nbsp#9<span class="boxed"><div id="count9">0</div></span></td>
+		<td style="text-align: right; font-size: 22px;" class="spacer-cell">Total<span style="font-weight: bold;"class="boxed"><div id="total60">0</div></span></td>
+	  </tr>
+	</table>
+	</div>
+
+	<div class="keyboard" id="keyboard"></div>
+	<div id="deleteBar">
+	  🗑️
+	</div>
+	
+
+	<div id="archerInfoModal">
+	  <h3>Modifier Infos Archer</h3>
+	  <input type="text" id="modalArcherName" placeholder="Nom">
+	  <input type="text" id="modalArcherID" placeholder="ID Unique">
+	  <select id="modalTargetNumber">
+		<option value="">Cible #</option>
+		<option value="1">1</option>
+		<option value="2">2</option>
+		<option value="3">3</option>
+		<option value="4">4</option>
+		<option value="5">5</option>
+		<option value="6">6</option>
+		<option value="7">7</option>
+		<option value="8">8</option>
+		<option value="9">9</option>
+		<option value="10">10</option>
+		<option value="11">11</option>
+		<option value="12">12</option>
+		<option value="13">13</option>
+		<option value="14">14</option>
+		<option value="15">15</option>
+	  </select>
+	  <select id="modalPosition">
+		<option value="">Position</option>
+		<option value="A">A</option>
+		<option value="B">B</option>
+		<option value="C">C</option>
+		<option value="D">D</option>
+	  </select>
+	  <br><br>
+	  <button onclick="saveArcherInfo()">Enregistrer</button>
+	  <button onclick="closeArcherInfoModal()">Annuler</button>
+	</div>
+	
+	<script src="app.js"></script>
+
 </div>
 
-<div id="archersContainer"></div>
+<div id="archerModal" class="modal">
+  <div class="modal-content">
+    <div class="tab-buttons">
+      <button onclick="showTab(1)">Archer 1</button>
+      <button onclick="showTab(2)">Archer 2</button>
+      <button onclick="showTab(3)">Archer 3</button>
+      <button onclick="showTab(4)">Archer 4</button>
+    </div>
 
-<div class="keyboard" id="keyboard"></div>
+    <div id="tab1" class="tab-content">
+      <h3>Archer 1</h3>
+      Name: <input id="name1"><br>
+      ID: <input id="id1"><br>
+      Target: <input id="target1"><br>
+      Position: <input id="position1"><br>
+    </div>
 
-<div id="archerInfoModal">
-  <h3>Modifier Infos Archer</h3>
-  <input type="text" id="modalArcherName" placeholder="Nom">
-  <input type="text" id="modalArcherID" placeholder="ID Unique">
-  <select id="modalTargetNumber">
-    <option value="">Cible #</option>
-    ${Array.from({ length: 15 }, (_, j) => `<option value="${j+1}">${j+1}</option>`).join('')}
-  </select>
-  <select id="modalPosition">
-    <option value="">Position</option>
-    <option value="A">A</option>
-    <option value="B">B</option>
-    <option value="C">C</option>
-    <option value="D">D</option>
-  </select>
-  <br><br>
-  <button onclick="saveArcherInfo()">Enregistrer</button>
-  <button onclick="closeModal()">Annuler</button>
+    <div id="tab2" class="tab-content">
+      <h3>Archer 2</h3>
+      Name: <input id="name2"><br>
+      ID: <input id="id2"><br>
+      Target: <input id="target2"><br>
+      Position: <input id="position2"><br>
+    </div>
+
+    <div id="tab3" class="tab-content">
+      <h3>Archer 3</h3>
+      Name: <input id="name3"><br>
+      ID: <input id="id3"><br>
+      Target: <input id="target3"><br>
+      Position: <input id="position3"><br>
+    </div>
+
+    <div id="tab4" class="tab-content">
+      <h3>Archer 4</h3>
+      Name: <input id="name4"><br>
+      ID: <input id="id4"><br>
+      Target: <input id="target4"><br>
+      Position: <input id="position4"><br>
+    </div>
+
+    <button onclick="saveArchers()">Save</button>
+    <button onclick="closeArcherListModal()">Close</button>
+  </div>
 </div>
-
-<script>
-let currentArcher = 1;
-let currentEditingArcher = null;
-const colors = { "X": "#FFD700", "10": "#FFD700", "9": "#FF6347", "8": "#FF6347", "7": "#1E90FF", "6": "#1E90FF", "5": "#333333", "4": "#333333", "3": "#f0f0f0", "2": "#f0f0f0", "1": "#f0f0f0", "M": "#f0f0f0" };
-
-function createArcherForms(numArchers = 4) {
-  const container = document.getElementById('archersContainer');
-  for (let i = 1; i <= numArchers; i++) {
-    const archerDiv = document.createElement('div');
-    archerDiv.className = 'archer-info';
-    archerDiv.id = `archerInfo${i}`;
-    archerDiv.innerHTML = `
-      <div class="archer-header" onclick="openModalForArcher(${i})" id="archerHeader${i}">Nom de l'archer</div>
-      <div id="table${i}"></div>
-    `;
-    container.appendChild(archerDiv);
-    buildArcherTable(`table${i}`);
-  }
-}
-
-function buildArcherTable(containerId) {
-  const container = document.getElementById(containerId);
-  const table = document.createElement('table');
-  for (let i = 0; i < 10; i++) {
-    const row = document.createElement('tr');
-    for (let j = 0; j < 6; j++) {
-      const td = document.createElement('td');
-      const input = document.createElement('input');
-      input.type = 'text';
-      input.className = 'score-input';
-      input.addEventListener('focus', () => setActiveInput(input));
-      td.appendChild(input);
-      row.appendChild(td);
-    }
-    table.appendChild(row);
-  }
-  container.appendChild(table);
-}
-
-let activeInput = null;
-function setActiveInput(input) {
-  if (activeInput) activeInput.classList.remove('active-input');
-  activeInput = input;
-  activeInput.classList.add('active-input');
-}
-
-function buildKeyboard() {
-  const keyboard = document.getElementById('keyboard');
-  ['X', '10', '9', '8', '7', '6', '5', '4', '3', '2', '1', 'M'].forEach(val => {
-    const key = document.createElement('div');
-    key.className = 'key';
-    key.innerText = val;
-    key.style.background = colors[val] || '#ddd';
-    key.onclick = () => {
-      if (activeInput) {
-        activeInput.value = val;
-        activeInput.style.background = colors[val] || '#fff';
-        moveNextInput();
-        saveAllArchers();
-      }
-    };
-    keyboard.appendChild(key);
-  });
-}
-
-function moveNextInput() {
-  const inputs = Array.from(document.querySelectorAll('.archer-info:nth-child(' + currentArcher + ') .score-input'));
-  const idx = inputs.indexOf(activeInput);
-  if (idx >= 0 && idx < inputs.length - 1) {
-    inputs[idx + 1].focus();
-  }
-}
-
-function saveAllArchers() {
-  // Implementation
-}
-
-function loadAllArchers() {
-  // Implementation
-}
-
-function resetScores() {
-  // Implementation
-}
-
-function previousArcher() {
-  // Implementation
-}
-
-function nextArcher() {
-  // Implementation
-}
-
-function openModalForArcher(archerIndex) {
-  currentEditingArcher = archerIndex;
-  document.getElementById('archerInfoModal').style.display = 'block';
-}
-
-function closeModal() {
-  document.getElementById('archerInfoModal').style.display = 'none';
-}
-
-function saveArcherInfo() {
-  // Implementation
-  closeModal();
-}
-
-window.onload = function() {
-  createArcherForms(4);
-  buildKeyboard();
-};
-</script>
 
 </body>
 </html>
