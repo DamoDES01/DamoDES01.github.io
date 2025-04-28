@@ -1,11 +1,6 @@
 let currentArcher = 1;
 let currentEditingArcher = null;
-
-// Program structure:
-// window.onload
-//   createArcherForms
-//     buildArcherTable
-//   buildKeyboard  
+const GOOGLE_FORM_URL = 'https://forms.gle/u9D7inN4H9L2GTjk6';
 
 const keyboardLayout = [
   ['X', '10', '9', '8', '7'],
@@ -33,10 +28,10 @@ function toggleMenu() {
   menu.style.display = (menu.style.display === 'flex') ? 'none' : 'flex';
 }
 
-// function openArchers() {
-  // toggleMenu();
-  // alert('Liste des archers pas implantée!');
-// }
+function openArchers() {
+  toggleMenu();
+  openArchersEditModal();
+}
 
 function exportToGoogleSheet() {
   toggleMenu();
@@ -209,12 +204,6 @@ document.getElementById('deleteBar').onclick = function() {
   saveAllArchers();
 };
 
-		moveNextInput();
-		updateSumsAndCumul();
-		updateSummary();
-		saveAllArchers();
-
-
 function saveAllArchers() {
   const archers = {};
   for (let i = 1; i <= 4; i++) {
@@ -294,44 +283,6 @@ function updateArcherInfoDisplay() {
 	display.innerText = "Assigner un Archer";
   }
 }
-
-function openModalForArcher() {
-  const index = currentArcher;
-  currentEditingArcher = index;
-  const header = document.getElementById('archerHeader' + index);
-   
-  document.getElementById('modalArcherName').value = header.dataset.name || '';
-  document.getElementById('modalArcherID').value = header.dataset.id || '';
-  document.getElementById('modalTargetNumber').value = header.dataset.target || '';
-  document.getElementById('modalPosition').value = header.dataset.position || '';
-  
-  document.getElementById('archerInfoModal').style.display = 'block';
-}
-
-function saveArcherInfo() {
-  const name = document.getElementById('modalArcherName').value;
-  const uniqueID = document.getElementById('modalArcherID').value;
-  const target = document.getElementById('modalTargetNumber').value;
-  const position = document.getElementById('modalPosition').value;
-  const header = document.getElementById('archerHeader' + currentEditingArcher);
-  header.dataset.name = name;
-  header.dataset.id = uniqueID;
-  header.dataset.target = target;
-  header.dataset.position = position;
-  //header.innerText = formatHeader(target, position, name);
-  saveAllArchers();
-  updateArcherInfoDisplay();
-  closeArcherInfoModal();
-}
-
-function closeArcherInfoModal() {
-  document.getElementById('archerInfoModal').style.display = 'none';
-}
-
-// function formatHeader(target, position, name) {
-  // if (!target || !position || !name) return "Nom de l'archer";
-  // return `${target}${position} - ${name}`;
-// }
 
 function moveNextInput() {
   const currentArcher = document.querySelector('.archer-info[style*="block"]'); 
@@ -450,66 +401,6 @@ function parseScore(val) {
   return isNaN(num) ? 0 : num;
 }
 
-function openArchers() {
-  toggleMenu();
-
-  const data = JSON.parse(localStorage.getItem('archersData'));
-  if (!data) return;
-  
-  for (let i = 1; i <= 4; i++) {
-    const archer = data[i];
-    document.getElementById('target' + i).value = archer.target || "";
-    document.getElementById('position' + i).value = archer.position || "";
-    document.getElementById('name' + i).value = archer.name || "";
-    document.getElementById('id' + i).value = archer.id || "";
-  }
-  document.getElementById('archerModal').style.display = 'block';
-  showTab(1);
-}
-
-function closeArcherListModal() {
-  document.getElementById('archerModal').style.display = 'none';
-}
-
-function showTab(tabNumber) {
-  for (let i = 1; i <= 4; i++) {
-    document.getElementById('tab' + i).classList.remove('active');
-  }
-  document.getElementById('tab' + tabNumber).classList.add('active');
-}
-
-function saveArchers() {
-  const archers = {};
-
-  for (let i = 1; i <= 4; i++) {
-    const target = document.getElementById('target' + i).value;
-    const position = document.getElementById('position' + i).value;
-    const name = document.getElementById('name' + i).value;
-    const uniqueID = document.getElementById('id' + i).value;
-
-    // Keep the existing scores
-    const scores = Array.from(document.querySelectorAll(`#archerInfo${i} .score-input`)).map(input => input.value);
-
-    // Save into archers object
-    archers[i] = { name, uniqueID, target, position, scores };
-
-    // ✅ Update the visible archerHeader datasets
-    const header = document.getElementById('archerHeader' + i);
-    if (header) {
-      header.dataset.name = name;
-      header.dataset.id = uniqueID;
-      header.dataset.target = target;
-      header.dataset.position = position;
-    }
-  }
-
-  // Save complete archers data to localStorage
-  localStorage.setItem('archersData', JSON.stringify(archers));
-
-  updateArcherInfoDisplay();
-  closeArcherListModal();
-}
-
 function focusFirstEmptyInput() {
   const currentArcher = document.querySelector('.archer-info[style*="block"]');
   if (!currentArcher) return; // no archer visible
@@ -543,3 +434,84 @@ function focusFirstEmptyInput() {
   }
 }
 
+function openArchersEditModal() {
+  const tbody = document.querySelector('#archersEditTable tbody');
+  tbody.innerHTML = ''; // Clear existing rows
+
+  for (let i = 1; i <= 4; i++) {
+    const header = document.getElementById('archerHeader' + i);
+
+    const row = document.createElement('tr');
+
+    row.innerHTML = `
+      <td><strong>${i}</strong></td>
+      <td><input type="text" id="archerName${i}" value="${header.dataset.name || ''}"></td>
+      <td><input type="text" id="archerId${i}" value="${header.dataset.id || ''}"></td>
+      <td><input type="text" id="archerTarget${i}" value="${header.dataset.target || ''}"></td>
+      <td><input type="text" id="archerPosition${i}" value="${header.dataset.position || ''}"></td>
+    `;
+
+    tbody.appendChild(row);
+  }
+
+  document.getElementById('archersEditModal').style.display = 'block';
+}
+
+function closeArchersEditModal() {
+  document.getElementById('archersEditModal').style.display = 'none';
+}
+
+function saveAllArchersInfo() {
+  for (let i = 1; i <= 4; i++) {
+    const header = document.getElementById('archerHeader' + i);
+
+    header.dataset.name = document.getElementById('archerName' + i).value.trim();
+    header.dataset.id = document.getElementById('archerId' + i).value.trim();
+    header.dataset.target = document.getElementById('archerTarget' + i).value.trim();
+    header.dataset.position = document.getElementById('archerPosition' + i).value.trim();
+  }
+
+  updateArcherInfoDisplay();
+  saveAllArchers();
+  closeArchersEditModal();
+}
+
+function submitToGoogleForm() {
+  const now = new Date();
+  const date = now.toISOString().split('T')[0];
+  const time = now.toTimeString().split(' ')[0].substring(0,5);
+
+
+  for (let i = 1; i <= 4; i++) {
+    selectArcher(i);
+    updateSumsAndCumul();
+    updateSummary();
+
+    const currentArcher = document.getElementById('archerHeader' + i);
+
+    const archerName = currentArcher.querySelector('#archerName' + i).value.trim();
+    const archerId = currentArcher.querySelector('#archerId' + i).value.trim();
+
+    const cumulative1to10 = currentArcher.querySelector('#cumul_left_10').innerText.trim();
+    const cumulative11to20 = currentArcher.querySelector('#cumul_right_20').innerText.trim();
+
+    const count10s = currentArcher.querySelector('#count10').innerText.trim();
+    const count9s = currentArcher.querySelector('#count9').innerText.trim();
+
+    const formData = new FormData();
+    formData.append('entry.1495486367', date);
+    formData.append('entry.300170305', time);
+    formData.append('entry.1544667290', archerId);
+    formData.append('entry.1134450', archerName);
+    formData.append('entry.204468612', cumulative1to10);
+    formData.append('entry.710538689', cumulative11to20);
+    formData.append('entry.1983848050', count10s);
+    formData.append('entry.709843835', count9s);
+  }
+
+  fetch(GOOGLE_FORM_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    body: formData
+  });
+}

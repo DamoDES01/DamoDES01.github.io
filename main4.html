@@ -20,7 +20,7 @@
 		  <div onclick="resetAll()">Réinitialiser</div>
 		</div>
 	  </div>
-	  <div class="archer-info-display" onclick="openModalForArcher()" id="archerInfoDisplay">
+	  <div class="archer-info-display" onclick="openArchersEditModal()" id="archerInfoDisplay">
 		Assigner un Archer
 	  </div>
 	  <div class="next-archer">
@@ -48,88 +48,33 @@
 	  🗑️
 	</div>
 	
-
-	<div id="archerInfoModal">
-	  <h3>Modifier Infos Archer</h3>
-	  <input type="text" id="modalArcherName" placeholder="Nom">
-	  <input type="text" id="modalArcherID" placeholder="ID Unique">
-	  <select id="modalTargetNumber">
-		<option value="">Ballot #</option>
-		<option value="1">1</option>
-		<option value="2">2</option>
-		<option value="3">3</option>
-		<option value="4">4</option>
-		<option value="5">5</option>
-		<option value="6">6</option>
-		<option value="7">7</option>
-		<option value="8">8</option>
-		<option value="9">9</option>
-		<option value="10">10</option>
-		<option value="11">11</option>
-		<option value="12">12</option>
-		<option value="13">13</option>
-		<option value="14">14</option>
-		<option value="15">15</option>
-	  </select>
-	  <select id="modalPosition">
-		<option value="">Position</option>
-		<option value="A">A</option>
-		<option value="B">B</option>
-		<option value="C">C</option>
-		<option value="D">D</option>
-	  </select>
-	  <br><br>
-	  <button onclick="saveArcherInfo()">Enregistrer</button>
-	  <button onclick="closeArcherInfoModal()">Annuler</button>
-	</div>
-	
 	<script src="app.js"></script>
 
 </div>
 
-<div id="archerModal" class="modal">
+<div id="archersEditModal" class="modal">
   <div class="modal-content">
-    <div class="tab-buttons">
-      <button onclick="showTab(1)">Archer 1</button>
-      <button onclick="showTab(2)">Archer 2</button>
-      <button onclick="showTab(3)">Archer 3</button>
-      <button onclick="showTab(4)">Archer 4</button>
-    </div>
+    <h2>Modifier les archers</h2>
 
-    <div id="tab1" class="tab-content">
-      <h3>Archer 1</h3>
-      Name: <input id="name1"><br>
-      ID: <input id="id1"><br>
-      Target: <input id="target1"><br>
-      Position: <input id="position1"><br>
-    </div>
+    <table id="archersEditTable">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Archer</th>
+          <th>#Adhérent</th>
+          <th>Ballot</th>
+          <th>Pos</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- We will generate rows dynamically -->
+      </tbody>
+    </table>
 
-    <div id="tab2" class="tab-content">
-      <h3>Archer 2</h3>
-      Name: <input id="name2"><br>
-      ID: <input id="id2"><br>
-      Target: <input id="target2"><br>
-      Position: <input id="position2"><br>
+    <div class="modal-buttons">
+      <button onclick="saveAllArchersInfo()">OK</button>
+      <button onclick="closeArchersEditModal()">Annuler</button>
     </div>
-
-    <div id="tab3" class="tab-content">
-      <h3>Archer 3</h3>
-      Name: <input id="name3"><br>
-      ID: <input id="id3"><br>
-      Target: <input id="target3"><br>
-      Position: <input id="position3"><br>
-    </div>
-
-    <div id="tab4" class="tab-content">
-      <h3>Archer 4</h3>
-      Name: <input id="name4"><br>
-      ID: <input id="id4"><br>
-      Target: <input id="target4"><br>
-      Position: <input id="position4"><br>
-    </div>
-
-    <button onclick="saveArchers()">Save</button>
-    <button onclick="closeArcherListModal()">Close</button>
   </div>
 </div>
 
