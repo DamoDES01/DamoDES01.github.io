@@ -489,6 +489,7 @@ function fillGoogleForm() {
 		WebAvail = 1;
 	} else {
 		alert('Veuillez établir une connexion internet. Je ne peux pas exporter les données. ');
+		return;
 	}
 
 	let previewText = 'Aperçu de l\'envoi :\n';
