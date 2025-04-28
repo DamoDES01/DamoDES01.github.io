@@ -1,4 +1,4 @@
-const CACHE_NAME = 'archery-app-cache-v1';
+const CACHE_NAME = 'archery-app-cache-v2';
 const urlsToCache = [
   '/',
   '/main4.html',
@@ -7,12 +7,33 @@ const urlsToCache = [
   // Add any other images or fonts you use
 ];
 
-// Install event: cache everything
+
 self.addEventListener('install', event => {
+  self.skipWaiting(); // Immediately activate new worker
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(urlsToCache))
+    caches.open('archery-app-cache-v1')
+      .then(cache => cache.addAll([
+        '/',
+        '/index.html',
+        '/app.js',
+        '/style.css'
+      ]))
   );
+});
+
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.map(cacheName => {
+          if (cacheName !== 'archery-app-cache-v1') {
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    })
+  );
+  self.clients.claim();
 });
 
 // Fetch event: serve from cache first
