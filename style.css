@@ -194,17 +194,17 @@ td {
   display: none;
   position: fixed;
   top: 20%;
-  left: 10%;
-  width: 80%;
+  left: 5%;
+  width: 85%;
   background: white;
   border: 2px solid black;
-  padding: 20px;
+  padding: 10px;
   z-index: 1000;
   border-radius: 8px;
 }
 #archerInfoModal input, #archerInfoModal select {
   margin: 5px 0;
-  width: 100%;
+  /* width: 100%; */
   padding: 8px;
 }
 /* General spacer style for both headers and cells */
