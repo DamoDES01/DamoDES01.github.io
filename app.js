@@ -40,10 +40,8 @@ function exportToGoogleSheet() {
 }
 
 function resetAll() {
-  toggleMenu();
-  if (confirm('Les résultas seront effacés. Êtes-vous sûr de vouloir tout réinitialiser?')) {
-    resetScores();
-  }
+	toggleMenu();
+	showConfirmDeleteModal();
 }
 
 window.onload = function() {
@@ -277,7 +275,7 @@ function updateArcherInfoDisplay() {
   const position = header.dataset.position || '';
 
   const display = document.getElementById('archerInfoDisplay');
-  if (currentArcher) {
+  if (name.trim() !== '') {
     display.innerText = `${target || "-"}${position || "-"} ${name || "-"} `;
   } else {
 	display.innerText = "Assigner un Archer";
@@ -488,7 +486,8 @@ function fillGoogleForm() {
 	if (navigator.onLine) {
 		WebAvail = 1;
 	} else {
-		alert('Veuillez établir une connexion internet. Je ne peux pas exporter les données. ');
+		// alert('Veuillez établir une connexion internet. Je ne peux pas exporter les données. ');
+		showExportModal(false);		
 		return;
 	}
 
@@ -545,7 +544,8 @@ function fillGoogleForm() {
 		  body: formData
 		});		
 	}
-	alert('Succès. Les résultats ont été exportés sur le web.');
+	showExportModal(true);	
+	// alert('Succès. Les résultats ont été exportés sur le web.');
 }
 
 function calculateCumulative(scores, offset) {
@@ -580,3 +580,60 @@ window.addEventListener('offline', updateOnlineStatus);
 
 // Call once at load
 updateOnlineStatus();
+
+function showExportModal(success) {
+  const modal = document.getElementById('exportModal');
+  const message = document.getElementById('exportModalMessage');
+
+  if (success) {
+    message.innerHTML = '<span style="color: green;">✅ Exportation réussie !</span>';
+  } else {
+    message.innerHTML = '<span style="color: red;">❌ Échec de l\'exportation. Veuillez établir une connexion internet.</span>';
+  }
+
+  modal.style.display = 'block';
+}
+
+function closeExportModal() {
+  const modal = document.getElementById('exportModal');
+  modal.style.display = 'none';
+}
+
+let deleteConfirmStep = 0;
+
+function showConfirmDeleteModal() {
+  const modal = document.getElementById('confirmDeleteModal');
+  const message = document.getElementById('confirmDeleteMessage');
+  deleteConfirmStep = 0;
+  message.innerHTML = 'Voulez-vous vraiment tout effacer ?';
+  modal.style.display = 'block';
+}
+
+function closeConfirmDeleteModal() {
+  const modal = document.getElementById('confirmDeleteModal');
+  modal.style.display = 'none';
+}
+
+function firstDeleteConfirm() {
+  if (deleteConfirmStep === 0) {
+    // First confirmation, ask again
+    const message = document.getElementById('confirmDeleteMessage');
+    message.innerHTML = 'Êtes-vous absolument certain ? Cette action est irréversible.';
+    deleteConfirmStep = 1;
+  } else {
+    // Second confirmation, proceed to delete
+    closeConfirmDeleteModal();
+    resetScores();
+    // showExportModal(true); // Reuse your success modal to say "Données effacées"
+  }
+}
+
+// function clearAllScores() {
+  // document.querySelectorAll('.score-input').forEach(input => {
+    // input.value = '';
+    // input.style.background = 'white';
+    // input.style.color = 'black';
+  // });
+  // localStorage.removeItem('archersData');
+  // showExportModal(true); // Reuse your success modal to say "Données effacées"
+// }

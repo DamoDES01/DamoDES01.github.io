@@ -17,13 +17,16 @@
 		<div class="hamburger-icon" onclick="toggleMenu()">☰</div>
 		<div class="menu-items" id="menuItems">
 		  <div onclick="openArchers()">Archers</div>
-		  <div onclick="exportToGoogleSheet()">Exporter</div>
-		  <div onclick="resetAll()">Réinitialiser</div>
+		  <div onclick="exportToGoogleSheet()">Envoyer au CTAM</div>
+		  <div onclick="resetAll()">Effacer les résultats</div>
 		</div>
 	  </div>
 	  <div class="archer-info-display" onclick="openArchersEditModal()" id="archerInfoDisplay">
 		Assigner un Archer
 	  </div>
+	<div id="offlineBanner" style="display:none; background-color: red; color: white; text-align: center; padding: 10px; font-weight: bold;">
+	  Hors ligne
+	</div>		  
 	  <div class="next-archer">
 		<button onclick="nextArcher()" class="next-archer-button">
 		  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="50" height="50" fill="black">
@@ -81,6 +84,25 @@
     </div>
   </div>
 </div>
+
+<div id="exportModal" style="display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5);">
+  <div style="background: white; margin: 20% auto; padding: 20px; border-radius: 8px; width: 80%; max-width: 400px; text-align: center; font-size: 18px;">
+    <div id="exportModalMessage"></div>
+    <br>
+    <button onclick="closeExportModal()" style="padding: 10px 20px; font-size: 16px;">OK</button>
+  </div>
+</div>
+
+<div id="confirmDeleteModal" style="display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5);">
+  <div style="background: white; margin: 20% auto; padding: 20px; border-radius: 8px; width: 80%; max-width: 400px; text-align: center; font-size: 18px;">
+    <div id="confirmDeleteMessage">Voulez-vous vraiment tout effacer ?</div>
+    <br>
+    <button onclick="firstDeleteConfirm()" style="padding: 10px 20px; margin-right: 10px;">Oui</button>
+    <button onclick="closeConfirmDeleteModal()" style="padding: 10px 20px;">Non</button>
+  </div>
+</div>
+
+
 
 <script>
   if ('serviceWorker' in navigator) {

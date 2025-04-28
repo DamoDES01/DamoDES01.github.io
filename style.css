@@ -12,6 +12,7 @@ body {
   background-color: #eee;
   padding: 2px 2px;
   border-bottom: 5px solid #ffffff;
+  height: 40px;
 }
 .hamburger-menu {
   position: relative;
@@ -31,14 +32,15 @@ body {
   background-color: white;
   border: 1px solid black;
   position: absolute;
-  top: 30px;
+  top: 40px;
   left: 0;
 }
 
 .menu-items div {
-  padding: 10px;
+  padding: 20px;
   cursor: pointer;
   border-top: 1px solid black;
+  width: 150px
 }
 
 .menu-items div:first-child {
