@@ -7,7 +7,6 @@ const urlsToCache = [
   // Add any other images or fonts you use
 ];
 
-
 self.addEventListener('install', event => {
   self.skipWaiting(); // Immediately activate new worker
   event.waitUntil(

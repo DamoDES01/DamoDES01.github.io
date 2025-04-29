@@ -499,7 +499,8 @@ function fillGoogleForm() {
 		const uniqueID = document.getElementById('archerHeader' + i).dataset.id || '';
 		const target = document.getElementById('archerHeader' + i).dataset.target || '';
 		const position = document.getElementById('archerHeader' + i).dataset.position || '';
-		const scores = Array.from(document.querySelectorAll(`#archerInfo${i} .score-input`)).map(input => input.value);
+		//const scores = Array.from(document.querySelectorAll(`#archerInfo${i} .score-input`)).map(input => input.value);
+		const scores = Array.from(document.querySelectorAll(`#archerInfo${i} .score-input`)).map(input => (input.value || '').trim())
 		archers[i] = { name, uniqueID, target, position, scores };
 	}
 	// alert('filled archers[]');
@@ -510,11 +511,18 @@ function fillGoogleForm() {
 
 	  const archerName = archer.name;
 	  const archerId = archer.uniqueID;
+	  
+	  if (archerName === '' && archerId === '') {continue;}
 
 	  const cumulative1to10 = calculateCumulative(archer.scores, 0); // lines 1 to 10
 	  const cumulative11to20 = calculateCumulative(archer.scores, 3); // lines 11 to 20
 	  const count10s = archer.scores.filter(score => score == '10' || score == 'X').length;
 	  const count9s = archer.scores.filter(score => score == '9').length;
+	  const countEmpty = archer.scores.filter(score => score === '').length;
+	  
+	  if(archer.name === '' || countEmpty > 0) {
+		alert ('ATTENTION : ' + archer.name + ' a ' + countEmpty + ' résultats vide(s).');
+	  }
 
 		previewText = 'Aperçu de l\'envoi :\n';
 		previewText += `\nArcher ${i}:\n`;
